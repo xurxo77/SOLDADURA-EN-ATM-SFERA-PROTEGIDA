@@ -13,6 +13,8 @@ Apuntes visuales para el alumnado del CFGM de Soldadura y Calderería y de FP B�
 | `corte.html` | Corte y resanado: oxicorte, plasma y arco-aire (5 bloques) |
 | `montaje.html` | Montaje de construcciones metálicas (4 bloques) |
 | `tuberia.html` | Tubería industrial (5 bloques) |
+| `preparar.html` | Para docentes: genera pruebas escritas tipo test vinculadas a RA y CE |
+| `banco.js` | Banco de preguntas (lo genera `tools/banco.js`, no se edita a mano) |
 | `img/` | Fotos pequeñas de las tarjetas de la portada |
 
 Cada tema es un HTML autónomo: lleva dentro las imágenes y los estilos.

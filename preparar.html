@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Preparar una prueba · Apuntes de soldadura</title>
+<meta name="theme-color" content="#16314F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F3F6;--card:#fff;--ink:#141C28;--ink2:#465364;--line:#D3D9E0;--head:#16314F;--head-ink:#E8EEF5;
+  --arc:#2450E6;--gas:#0B857B;--molten:#C74A08;--violet:#5B3FB8;--violet-soft:#EEE9FB;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--head:#0B1826;--arc:#8FA8FF;--gas:#4FD1C5;--molten:#FF9159;--violet:#B7A4FF;--violet-soft:#241D3D;color-scheme:dark}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.45}
+header.top{background:var(--head);color:var(--head-ink);padding:28px 20px 26px}
+header.top .in,main{max-width:960px;margin:0 auto}
+header.top a{color:var(--head-ink);opacity:.85;font-weight:700;text-decoration:none;font-size:.95rem}
+h1{font-family:var(--f-head);font-size:clamp(2.2rem,6vw,3.2rem);line-height:1;margin:12px 0 8px;text-transform:uppercase}
+.intro{max-width:40rem;opacity:.9}
+main{padding:20px 20px 40px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px 20px;margin-bottom:18px}
+.panel h2{font-family:var(--f-head);font-size:1.45rem;text-transform:uppercase;letter-spacing:.02em;margin-bottom:10px}
+.paso{display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--violet);color:#fff;font-size:1rem;margin-right:6px;vertical-align:2px}
+label{font-weight:700}
+select,input[type=text],input[type=date],input[type=number]{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:.5rem .65rem;width:100%;min-height:2.6rem}
+.fila{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.fila>div{display:flex;flex-direction:column;gap:4px}
+.temas{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:6px}
+fieldset{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+legend{font-weight:700;padding:0 4px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-weight:400;padding:3px 0;cursor:pointer}
+.chk input{width:1.15rem;height:1.15rem;margin-top:.15rem;accent-color:var(--violet)}
+.chk small{color:var(--ink2)}
+.blq{display:flex;align-items:flex-start;gap:6px;justify-content:space-between}
+.blq .chk{flex:1}
+.solo{font:inherit;font-size:.8rem;font-weight:700;padding:.15rem .55rem;min-height:0;border-width:1.5px;background:transparent;color:var(--violet);margin-top:3px;white-space:nowrap}
+.blq.vacio{opacity:.45}
+.hoja .vin{display:block;font-size:8.5pt;color:#555;margin-top:1px}
+.hoja .vin b{color:#333}
+.ayuda{color:var(--ink2);font-size:.92rem;margin-top:6px}
+.disp{font-weight:700;color:var(--violet)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+button{font:inherit;font-weight:700;border-radius:999px;padding:.65rem 1.3rem;cursor:pointer;border:2px solid var(--violet);background:var(--violet);color:#fff;min-height:2.8rem}
+button.sec{background:transparent;color:var(--violet)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.aviso{background:var(--violet-soft);border-radius:10px;padding:10px 14px;font-size:.93rem;margin-top:12px}
+
+/* Hojas del examen: se ven como papel y se imprimen tal cual */
+#salida{display:none}
+#salida.on{display:block}
+.hoja{background:#fff;color:#111;max-width:800px;margin:0 auto 22px;padding:34px 40px;border-radius:4px;box-shadow:0 2px 10px rgba(0,0,0,.15);font-size:11.5pt;line-height:1.4}
+.hoja .cab{border:1.5px solid #111;border-radius:4px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 18px;font-size:10.5pt}
+.hoja .cab .t{grid-column:1/-1;font-family:var(--f-head);font-size:17pt;text-transform:uppercase;line-height:1.1}
+.hoja .cab .ver{font-family:var(--f-head);font-size:20pt;grid-row:1;grid-column:2;text-align:right}
+.hoja .linea{border-bottom:1px solid #111;display:inline-block;min-width:16rem}
+.hoja .instr{margin:10px 0 14px;font-size:10pt}
+.hoja ol.preg{padding-left:1.6rem}
+.hoja ol.preg>li{margin:0 0 12px;break-inside:avoid}
+.hoja ol.preg>li .meta{font-size:8.5pt;color:#666}
+.hoja ol.ops{list-style:none;padding-left:.2rem;margin-top:4px}
+.hoja ol.ops li{margin:2px 0}
+.hoja ol.ops li b{display:inline-block;width:1.6rem}
+.hoja .huecos li{min-height:5.5rem}
+.hoja h3{font-family:var(--f-head);font-size:14pt;text-transform:uppercase;margin:14px 0 8px}
+.hoja table{border-collapse:collapse;width:100%;font-size:10pt}
+.hoja th,.hoja td{border:1px solid #999;padding:4px 6px;text-align:left;vertical-align:top}
+.hoja td.r{font-weight:700;text-align:center;width:3rem}
+.hoja .pie{margin-top:14px;font-size:8.5pt;color:#666;text-align:center}
+.solo-pantalla{}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff}
+  header.top,#config,.solo-pantalla{display:none!important}
+  main{padding:0;max-width:none}
+  .hoja{box-shadow:none;max-width:none;margin:0;padding:0;border-radius:0;break-after:page}
+  .hoja:last-child{break-after:auto}
+}
+</style>
+<script src="banco.js"></script>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a href="index.html">← Volver a los apuntes</a>
+  <h1>Preparar una prueba</h1>
+  <p class="intro">Para docentes. Eliges el módulo y los bloques, y sale un examen tipo test listo para imprimir, con dos versiones y la hoja de respuestas aparte.</p>
+</div></header>
+
+<main>
+<div id="config">
+  <section class="panel">
+    <h2><span class="paso">1</span>Módulo</h2>
+    <div class="fila">
+      <div><label for="modulo">Ciclo y módulo</label><select id="modulo"></select></div>
+    </div>
+    <p class="ayuda">Al cambiar de módulo se marcan sus temas. Puedes quitar o añadir bloques a mano.</p>
+  </section>
+
+  <section class="panel">
+    <h2><span class="paso">2</span>Qué entra</h2>
+    <div class="temas" id="temas"></div>
+    <div id="raBox" hidden style="margin-top:14px">
+      <fieldset><legend>Resultados de aprendizaje del módulo</legend><div id="ras"></div></fieldset>
+      <p class="ayuda">Quita un RA si no entra en esta prueba. El número entre paréntesis son las preguntas que hay de ese RA en los bloques marcados.</p>
+    </div>
+    <p class="ayuda">Preguntas disponibles con lo marcado: <span class="disp" id="disp">0</span> · «solo este» deja marcado un único bloque para hacer la prueba de ese contenido.</p>
+  </section>
+
+  <section class="panel">
+    <h2><span class="paso">3</span>Cómo es la prueba</h2>
+    <div class="fila">
+      <div><label for="titulo">Título</label><input type="text" id="titulo" value="Prueba escrita"></div>
+      <div><label for="centro">Centro y grupo</label><input type="text" id="centro" placeholder="IES ACCI · 1.º CFGM"></div>
+      <div><label for="fecha">Fecha</label><input type="date" id="fecha"></div>
+    </div>
+    <div class="fila" style="margin-top:12px">
+      <div><label for="num">Número de preguntas</label><input type="number" id="num" min="1" value="20"></div>
+      <div><label for="vers">Versiones</label><select id="vers"><option value="1">Una (A)</option><option value="2" selected>Dos (A y B)</option><option value="3">Tres (A, B y C)</option></select></div>
+      <div><label for="penal">Penalización por fallo</label><select id="penal"><option value="0">Sin penalización</option><option value="0.33">Resta 1/3 de acierto</option><option value="0.5">Resta 1/2 de acierto</option></select></div>
+    </div>
+    <div style="margin-top:12px">
+      <label class="chk"><input type="checkbox" id="barajarOps" checked> <span>Barajar también las opciones de cada pregunta</span></label>
+      <label class="chk"><input type="checkbox" id="explic" checked> <span>Poner la explicación de cada respuesta en el solucionario</span></label>
+      <label class="chk"><input type="checkbox" id="vinculo" checked> <span>Poner debajo de cada pregunta su RA y CE</span></label>
+      <label class="chk"><input type="checkbox" id="origen"> <span>Poner también de qué tema y bloque sale</span></label>
+    </div>
+    <div class="fila" style="margin-top:12px">
+      <div><label for="abiertas">Preguntas abiertas tuyas (una por línea, opcional)</label>
+      <textarea id="abiertas" rows="3" style="font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:.5rem .65rem" placeholder="Explica cómo regulas el gas de protección antes de soldar."></textarea></div>
+    </div>
+    <div class="btns">
+      <button type="button" id="gen">Generar la prueba</button>
+    </div>
+    <p class="aviso">Las preguntas salen de los tests de los apuntes, que el alumnado también puede ver. Para una prueba que cuente nota, añade preguntas abiertas tuyas.</p>
+  </section>
+</div>
+
+<div id="salida">
+  <div class="btns solo-pantalla" style="max-width:800px;margin:0 auto 16px">
+    <button type="button" id="imp">Imprimir o guardar en PDF</button>
+    <button type="button" class="sec" id="otra">Otra tirada</button>
+    <button type="button" class="sec" id="volver">Cambiar opciones</button>
+  </div>
+  <p class="ayuda solo-pantalla" style="max-width:800px;margin:-6px auto 16px" id="codigo"></p>
+  <div id="hojas"></div>
+</div>
+</main>
+
+<script>
+(function(){
+  var B=window.BANCO, $=function(s){return document.querySelector(s)};
+  var LET="abcdefgh";
+  var temaPorId={};B.temas.forEach(function(t){temaPorId[t.id]=t});
+
+  // 1. Módulos agrupados por ciclo
+  var sel=$("#modulo"),ciclos={};
+  Object.keys(B.modulos).forEach(function(c){var m=B.modulos[c];(ciclos[m.ciclo]=ciclos[m.ciclo]||[]).push(c)});
+  sel.innerHTML='<option value="">Todos los temas</option>'+Object.keys(ciclos).map(function(ci){
+    return '<optgroup label="'+ci+'">'+ciclos[ci].map(function(c){return '<option value="'+c+'">'+c+' · '+B.modulos[c].nombre+(B.curriculo[c]?'':' (sin RA/CE todavía)')+'</option>'}).join("")+'</optgroup>';
+  }).join("");
+
+  // 2. Temas y bloques (el recuento depende del módulo elegido)
+  function delModulo(p){var c=sel.value;return !c||p.mods.indexOf(c)>=0}
+  $("#temas").innerHTML=B.temas.map(function(t){
+    return '<fieldset data-tema="'+t.id+'"><legend><label class="chk"><input type="checkbox" class="todo"> '+t.nombre+'</label></legend>'+
+      t.bloques.map(function(b){return '<div class="blq" data-b="'+t.id+'|'+b.n+'"><label class="chk"><input type="checkbox" class="bl" value="'+t.id+'|'+b.n+'"> <span>Bloque '+b.n+' · '+b.nombre+' <small class="nb"></small></span></label><button type="button" class="solo sec">solo este</button></div>'}).join("")+'</fieldset>';
+  }).join("");
+  function marcados(){return Array.prototype.map.call(document.querySelectorAll(".bl:checked"),function(i){return i.value})}
+  function rasFuera(){return Array.prototype.map.call(document.querySelectorAll(".rachk:not(:checked)"),function(i){return i.value})}
+  function base(){var m=marcados();return B.preguntas.filter(function(p){return delModulo(p)&&m.indexOf(p.tema+"|"+p.bloque)>=0})}
+  function pool(){var f=rasFuera(),c=sel.value;return base().filter(function(p){return !(p.mod===c&&f.indexOf(p.ra)>=0)})}
+  function pintaRAs(){
+    var c=sel.value,cur=B.curriculo[c];
+    $("#raBox").hidden=!cur;if(!cur){$("#ras").innerHTML="";return}
+    $("#ras").innerHTML=Object.keys(cur.ra).map(function(r){return '<label class="chk"><input type="checkbox" class="rachk" value="'+r+'" checked> <span><b>'+r+'</b> · '+cur.ra[r]+' <small class="nr" data-r="'+r+'"></small></span></label>'}).join("");
+  }
+  function refresca(){
+    document.querySelectorAll(".blq").forEach(function(d){
+      var k=d.getAttribute("data-b"),n=B.preguntas.filter(function(p){return delModulo(p)&&p.tema+"|"+p.bloque===k}).length;
+      d.querySelector(".nb").textContent="("+n+")";d.classList.toggle("vacio",n===0);
+    });
+    document.querySelectorAll("fieldset[data-tema]").forEach(function(f){
+      var bs=f.querySelectorAll(".bl"),on=f.querySelectorAll(".bl:checked").length,todo=f.querySelector(".todo");
+      todo.checked=on===bs.length;todo.indeterminate=on>0&&on<bs.length;
+    });
+    var bp=base();
+    document.querySelectorAll(".nr").forEach(function(s){var r=s.getAttribute("data-r");s.textContent="("+bp.filter(function(p){return p.mod===sel.value&&p.ra===r}).length+")"});
+    var n=pool().length;$("#disp").textContent=n;$("#num").max=n;
+    $("#gen").disabled=n===0&&!$("#abiertas").value.trim();
+  }
+  $("#temas").addEventListener("change",function(e){
+    if(e.target.classList.contains("todo"))e.target.closest("fieldset").querySelectorAll(".bl").forEach(function(i){i.checked=e.target.checked});
+    refresca();
+  });
+  $("#temas").addEventListener("click",function(e){
+    if(!e.target.classList.contains("solo"))return;
+    document.querySelectorAll(".bl").forEach(function(i){i.checked=false});
+    document.querySelectorAll(".rachk").forEach(function(i){i.checked=true});
+    var d=e.target.closest(".blq");d.querySelector(".bl").checked=true;
+    var t=temaPorId[d.getAttribute("data-b").split("|")[0]],bn=+d.getAttribute("data-b").split("|")[1];
+    var bl=t.bloques.filter(function(b){return b.n===bn})[0];
+    $("#titulo").value="Prueba escrita · "+t.nombre+" · Bloque "+bn+" ("+bl.nombre+")";
+    refresca();$("#num").value=pool().length;
+  });
+  $("#ras").addEventListener("change",refresca);
+  function ponModulo(){
+    var c=sel.value;
+    B.temas.forEach(function(t){
+      var on=!c||t.modulos.indexOf(c)>=0;
+      document.querySelectorAll('fieldset[data-tema="'+t.id+'"] .bl').forEach(function(i){i.checked=on});
+    });
+    $("#titulo").value=c?"Prueba escrita · "+c+" "+B.modulos[c].nombre:"Prueba escrita";
+    pintaRAs();refresca();
+  }
+  function vin(p){
+    if(!p.mod)return "";
+    var cur=B.curriculo[p.mod];
+    return p.mod+" · "+p.ra+" ("+cur.ra[p.ra]+") · CE "+p.ce.split("-CE")[1];
+  }
+  sel.addEventListener("change",ponModulo);
+  $("#abiertas").addEventListener("input",refresca);
+  $("#fecha").valueAsDate=new Date();
+  ponModulo();
+
+  // 3. Azar con semilla: el mismo código da la misma prueba
+  function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+  function baraja(a,r){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),x=a[i];a[i]=a[j];a[j]=x}return a}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+  var semilla=0;
+  function genera(nueva){
+    if(nueva||!semilla)semilla=Math.floor(Math.random()*900000)+100000;
+    var r=rng(semilla),P=pool(),n=Math.min(+$("#num").value||0,P.length);
+    var elegidas=baraja(P,r).slice(0,n);
+    var nv=+$("#vers").value,barOps=$("#barajarOps").checked,penal=+$("#penal").value;
+    var abiertas=$("#abiertas").value.split("\n").map(function(s){return s.trim()}).filter(Boolean);
+    var titulo=esc($("#titulo").value||"Prueba escrita"),centro=esc($("#centro").value);
+    var f=$("#fecha").value?new Date($("#fecha").value).toLocaleDateString("es-ES"):"";
+    var versiones=[];
+    for(var v=0;v<nv;v++){
+      var orden=v===0?elegidas:baraja(elegidas,r);
+      versiones.push(orden.map(function(p){
+        var idx=p.o.map(function(_,i){return i});
+        if(barOps)idx=baraja(idx,r);
+        return {p:p,idx:idx,ok:idx.indexOf(p.a)};
+      }));
+    }
+    var html="",VN="ABC";
+    var instr="Marca una sola respuesta en cada pregunta."+(penal?" Cada fallo resta "+(penal===0.5?"media":"un tercio de")+" respuesta correcta; en blanco no resta.":" Los fallos no restan.");
+    versiones.forEach(function(V,v){
+      html+='<section class="hoja"><div class="cab"><div class="t">'+titulo+'</div>'+(nv>1?'<div class="ver">Versión '+VN[v]+'</div>':'')+
+        '<div>Nombre: <span class="linea"></span></div><div>Fecha: '+f+'</div>'+(centro?'<div>'+centro+'</div>':'')+'</div>'+
+        '<p class="instr">'+instr+'</p><ol class="preg">'+V.map(function(x){
+          var t=temaPorId[x.p.tema];
+          var notas=[];
+          if($("#vinculo").checked&&x.p.mod)notas.push('<b>'+esc(vin(x.p))+'</b>');
+          if($("#origen").checked)notas.push(esc(t.nombre)+', bloque '+x.p.bloque);
+          return '<li>'+esc(x.p.q)+(notas.length?'<span class="vin">'+notas.join(' · ')+'</span>':'')+
+            '<ol class="ops">'+x.idx.map(function(i,k){return '<li><b>'+LET[k]+')</b>'+esc(x.p.o[i])+'</li>'}).join("")+'</ol></li>';
+        }).join("")+'</ol>'+
+        (abiertas.length?'<h3>Preguntas para desarrollar</h3><ol class="preg huecos" start="'+(V.length+1)+'">'+abiertas.map(function(a){return '<li>'+esc(a)+'</li>'}).join("")+'</ol>':'')+
+        '<p class="pie">Preguntas tomadas de los apuntes de soldadura de Xurxo · código '+semilla+'</p></section>';
+    });
+    // Solucionario
+    html+='<section class="hoja"><div class="cab"><div class="t">Solucionario · '+titulo+'</div><div>Solo para el docente</div><div>Código '+semilla+'</div></div>';
+    html+='<h3>Respuestas</h3><table><tr><th>Pregunta</th>'+versiones.map(function(_,v){return '<th>Versión '+VN[v]+'</th>'}).join("")+'</tr>';
+    for(var i=0;i<n;i++){
+      html+='<tr><td>'+(i+1)+'</td>'+versiones.map(function(V){return '<td class="r">'+LET[V[i].ok]+'</td>'}).join("")+'</tr>';
+    }
+    html+='</table>';
+    // Qué criterios evalúa la prueba (para llevarlo a Nexus)
+    var porCE={};
+    versiones[0].forEach(function(x,i){if(!x.p.mod)return;var k=x.p.mod+" "+x.p.ce;(porCE[k]=porCE[k]||[]).push(i+1)});
+    var ks=Object.keys(porCE).sort(function(a,b){return a.localeCompare(b,"es",{numeric:true})});
+    if(ks.length){
+      html+='<h3>Criterios que evalúa (numeración de la versión A)</h3><table><tr><th>Módulo · RA · CE</th><th>Criterio (redacción de Nexus)</th><th>Preguntas</th></tr>'+ks.map(function(k){
+        var m=k.split(" ")[0],ce=k.split(" ")[1],cur=B.curriculo[m],ra=ce.split("-")[0];
+        return '<tr><td><b>'+m+' · '+ra+' · CE '+ce.split("-CE")[1]+'</b><br><small>'+esc(cur.ra[ra])+'</small></td><td>'+esc(cur.ce[ce])+'</td><td>'+porCE[k].join(", ")+'</td></tr>';
+      }).join("")+'</table>';
+    }
+    if($("#explic").checked&&n){
+      html+='<h3>Por qué (orden de la versión A)</h3><table>'+versiones[0].map(function(x,i){
+        var t=temaPorId[x.p.tema];
+        return '<tr><td class="r">'+(i+1)+' '+LET[x.ok]+'</td><td>'+esc(x.p.o[x.p.a])+'. '+esc(x.p.e)+'<br><small>'+esc(t.nombre)+' · bloque '+x.p.bloque+(x.p.mod?' · '+esc(vin(x.p)):'')+'</small></td></tr>';
+      }).join("")+'</table>';
+    }
+    html+='<p class="pie">Nota: aciertos'+(penal?' − fallos × '+(penal===0.5?'1/2':'1/3'):'')+', sobre '+n+'.</p></section>';
+    $("#hojas").innerHTML=html;
+    $("#codigo").textContent="Código de esta tirada: "+semilla+" · "+n+" preguntas de "+P.length+" disponibles"+(n<(+$("#num").value)?" (no hay más con lo marcado)":"")+".";
+    $("#config").style.display="none";$("#salida").classList.add("on");window.scrollTo(0,0);
+  }
+  $("#gen").addEventListener("click",function(){genera(true)});
+  $("#otra").addEventListener("click",function(){genera(true)});
+  $("#volver").addEventListener("click",function(){$("#salida").classList.remove("on");$("#config").style.display="";});
+  $("#imp").addEventListener("click",function(){window.print()});
+})();
+</script>
+</body>
+</html>
