@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estudiar · Aula-taller de soldadura</title>
+<meta name="theme-color" content="#16314F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F3F6;--card:#fff;--ink:#141C28;--ink2:#465364;--line:#D3D9E0;--head:#16314F;--head-ink:#E8EEF5;
+  --arc:#2450E6;--arc-soft:#E3E9FF;--gas:#0B857B;--molten:#C74A08;--steel:#4A5F78;--warn:#9A6A00;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--head:#0B1826;--arc:#8FA8FF;--arc-soft:#1C2647;--gas:#4FD1C5;--molten:#FF9159;--steel:#9DB2C8;--warn:#F2C14E;color-scheme:dark}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.45}
+header.top{background:var(--head);color:var(--head-ink);padding:26px max(20px,env(safe-area-inset-right)) 24px max(20px,env(safe-area-inset-left))}
+header.top .in,main,footer{max-width:960px;margin:0 auto}
+header.top a{color:var(--head-ink);opacity:.85;font-weight:700;text-decoration:none;font-size:.95rem}
+.etq{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;opacity:.8;margin-top:14px}
+h1{font-family:var(--f-head);font-size:clamp(2.2rem,6vw,3.2rem);line-height:1;margin:6px 0 8px;text-transform:uppercase}
+.intro{max-width:38rem;opacity:.9}
+main{padding:20px max(20px,env(safe-area-inset-right)) 32px max(20px,env(safe-area-inset-left))}
+h2{font-family:var(--f-head);font-size:1.6rem;text-transform:uppercase;letter-spacing:.02em;margin:22px 0 10px}
+.paso{display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--arc);color:#fff;font-size:1rem;margin-right:6px;vertical-align:2px}
+.ciclos{display:flex;flex-wrap:wrap;gap:10px}
+.ciclos button{font:inherit;font-weight:700;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.6rem 1.2rem;min-height:2.8rem}
+.ciclos button[aria-pressed="true"]{background:var(--arc);border-color:var(--arc);color:#fff}
+.ciclos button:focus-visible{outline:3px solid var(--arc);outline-offset:2px}
+.mods{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+a.mod{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--arc);border-radius:12px;padding:14px 16px}
+a.mod:hover{border-color:var(--arc)}
+a.mod:focus-visible{outline:3px solid var(--arc);outline-offset:3px}
+a.mod .cod{font-weight:700;color:var(--arc);font-size:.9rem}
+a.mod h3{font-family:var(--f-head);font-size:1.5rem;line-height:1.05;text-transform:uppercase;margin:2px 0 6px}
+a.mod p{color:var(--ink2);font-size:.92rem}
+.volver{font:inherit;font-weight:700;color:var(--arc);background:none;border:0;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.cabmod{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:12px}
+.cabmod .cod{font-weight:700;color:var(--arc)}
+.cabmod h2{margin:2px 0 6px}
+.ras{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ra{font-size:.85rem;border-radius:8px;padding:4px 9px;border:1.5px solid var(--line);color:var(--ink2)}
+.ra.si{border-color:var(--arc);background:var(--arc-soft);color:var(--ink)}
+.ra b{color:var(--arc)}
+.leyenda{font-size:.85rem;color:var(--ink2);margin-top:8px}
+.temas{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));margin-top:14px}
+.tema{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--c);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.tema img{display:block;width:100%;height:130px;object-fit:cover;background:var(--line)}
+.tema .tx{padding:12px 16px 14px;display:flex;flex-direction:column;flex:1}
+.tema h3{font-family:var(--f-head);font-size:1.6rem;line-height:1.05;text-transform:uppercase;color:var(--c)}
+.tema ol{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.tema ol a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:inherit;border:1.5px solid var(--line);border-radius:8px;padding:.55rem .7rem;min-height:2.8rem}
+.tema ol a:hover{border-color:var(--c)}
+.tema ol a:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+.tema ol .n{font-weight:700;color:var(--c);white-space:nowrap}
+.tema ol .rr{display:block;font-size:.8rem;color:var(--ink2)}
+.tema .todo{margin-top:10px;font-weight:700;color:var(--c);text-decoration:none}
+.c-electrodo{--c:var(--warn)}.c-migmag{--c:var(--arc)}.c-tig{--c:var(--gas)}.c-corte{--c:var(--molten)}.c-montaje,.c-tuberia{--c:var(--steel)}
+.nota{margin-top:24px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;color:var(--ink2);font-size:.95rem}
+footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:24px 20px 32px}
+</style>
+<script src="banco.js"></script>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a href="index.html">← Volver a la entrada</a>
+  <div class="etq">Modo estudiante</div>
+  <h1>Estudiar</h1>
+  <p class="intro">Elige tu ciclo y tu módulo. Dentro tienes los temas y los bloques que entran, cada uno con su test para practicar.</p>
+</div></header>
+
+<main>
+  <div id="vistaLista">
+    <h2><span class="paso">1</span>Tu ciclo</h2>
+    <div class="ciclos" id="ciclos"></div>
+    <h2><span class="paso">2</span>Tu módulo</h2>
+    <div class="mods" id="mods"></div>
+    <p class="nota">¿No sabes en qué módulo estás? Pregunta a tu profesor o profesora. También puedes <a href="#todo">ver todos los temas</a> juntos.</p>
+  </div>
+  <div id="vistaModulo" hidden></div>
+</main>
+<footer>Material elaborado por <b>Xurxo</b> · IES ACCI, Guadix</footer>
+
+<script>
+(function(){
+  var B=window.BANCO,$=function(s){return document.querySelector(s)};
+  var POS={migmag:"50% 40%",corte:"30% 50%"};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  var temaPorId={};B.temas.forEach(function(t){temaPorId[t.id]=t});
+
+  // Qué bloques y RA tiene cada módulo (sale de las preguntas vinculadas)
+  function bloquesDe(c){
+    var s={};B.preguntas.forEach(function(p){if(!c||p.mods.indexOf(c)>=0){var k=p.tema+"|"+p.bloque;(s[k]=s[k]||{})[p.ra||""]=1}});
+    return s;
+  }
+  var ciclos={};
+  Object.keys(B.modulos).forEach(function(c){var m=B.modulos[c];(ciclos[m.ciclo]=ciclos[m.ciclo]||[]).push(c)});
+  var nombresCiclo=Object.keys(ciclos).sort(function(a,b){return (b.indexOf("CFGM")===0)-(a.indexOf("CFGM")===0)});
+  nombresCiclo.forEach(function(ci){ciclos[ci].sort()});
+  var cicloSel=nombresCiclo[0];
+  try{var g=localStorage.getItem("estudiar_ciclo");if(g&&ciclos[g])cicloSel=g}catch(e){}
+
+  function pintaLista(){
+    $("#ciclos").innerHTML=nombresCiclo.map(function(ci){return '<button type="button" aria-pressed="'+(ci===cicloSel)+'" data-ci="'+esc(ci)+'">'+esc(ci)+'</button>'}).join("");
+    $("#mods").innerHTML=ciclos[cicloSel].map(function(c){
+      var bl=Object.keys(bloquesDe(c)),temas={};bl.forEach(function(k){temas[k.split("|")[0]]=1});
+      var nombres=Object.keys(temas).map(function(t){return temaPorId[t].nombre});
+      return '<a class="mod" href="#'+c+'"><span class="cod">Módulo '+c+'</span><h3>'+esc(B.modulos[c].nombre)+'</h3><p>'+(nombres.length?esc(nombres.join(" · "))+' · '+bl.length+(bl.length===1?' bloque':' bloques'):'Todavía sin contenidos')+'</p></a>';
+    }).join("");
+  }
+  $("#ciclos").addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    cicloSel=b.getAttribute("data-ci");try{localStorage.setItem("estudiar_ciclo",cicloSel)}catch(e){}
+    pintaLista();
+  });
+
+  function pintaModulo(c){
+    var todo=c==="todo",mod=B.modulos[c],cur=B.curriculo[c];
+    var bl=bloquesDe(todo?"":c),porTema={};
+    Object.keys(bl).forEach(function(k){var p=k.split("|");(porTema[p[0]]=porTema[p[0]]||[]).push(+p[1])});
+    var html='<button type="button" class="volver" id="atras">← Cambiar de módulo</button><div class="cabmod">';
+    if(todo){html+='<h2>Todos los temas</h2><p>Todos los apuntes del aula-taller, sin separar por módulo.</p>'}
+    else{
+      html+='<span class="cod">'+esc(mod.ciclo)+' · Módulo '+c+'</span><h2>'+esc(mod.nombre)+'</h2>';
+      if(cur){
+        var tocados={};Object.keys(bl).forEach(function(k){Object.keys(bl[k]).forEach(function(r){if(r)tocados[r]=1})});
+        html+='<p>Resultados de aprendizaje (RA) del módulo. En azul, los que trabajan estos apuntes:</p><div class="ras">'+
+          Object.keys(cur.ra).map(function(r){return '<span class="ra'+(tocados[r]?' si':'')+'"><b>'+r+'</b> · '+esc(cur.ra[r])+'</span>'}).join("")+'</div>'+
+          '<p class="leyenda">Los RA en gris se trabajan en clase y en el taller, todavía no en estos apuntes.</p>';
+      }else html+='<p>Los RA y CE de este módulo todavía no están cargados.</p>';
+    }
+    html+='</div><div class="temas">';
+    B.temas.forEach(function(t){
+      var ns=porTema[t.id];if(!ns)return;ns.sort();
+      html+='<div class="tema c-'+t.id+'"><img src="img/'+t.id+'.jpg" alt="" loading="lazy"'+(POS[t.id]?' style="object-position:'+POS[t.id]+'"':'')+'><div class="tx"><h3>'+esc(t.nombre)+'</h3><ol>'+
+        t.bloques.filter(function(b){return ns.indexOf(b.n)>=0}).map(function(b){
+          var ras=Object.keys(bl[t.id+"|"+b.n]).filter(Boolean).sort(function(a,b){return a.localeCompare(b,"es",{numeric:true})});
+          return '<li><a href="'+t.web+'#'+b.pag+'"><span class="n">Bloque '+b.n+'</span><span>'+esc(b.nombre)+(ras.length&&!todo?'<span class="rr">Trabaja: '+ras.join(", ")+'</span>':'')+'</span></a></li>';
+        }).join("")+'</ol><a class="todo" href="'+t.web+'">Abrir el tema completo →</a></div></div>';
+    });
+    html+='</div><p class="nota">Cada tema se abre en un solo archivo con todas sus imágenes: si lo guardas en el móvil, funciona sin conexión.</p>';
+    $("#vistaModulo").innerHTML=html;
+    $("#atras").addEventListener("click",function(){location.hash=""});
+  }
+
+  function ruta(){
+    var c=decodeURIComponent(location.hash.slice(1));
+    var enMod=c==="todo"||!!B.modulos[c];
+    $("#vistaLista").hidden=enMod;$("#vistaModulo").hidden=!enMod;
+    if(enMod){
+      if(B.modulos[c]){cicloSel=B.modulos[c].ciclo}
+      pintaModulo(c);
+      document.title=(c==="todo"?"Todos los temas":c+" "+B.modulos[c].nombre)+" · Estudiar";
+    }else{pintaLista();document.title="Estudiar · Aula-taller de soldadura"}
+    window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange",ruta);
+  ruta();
+})();
+</script>
+</body>
+</html>

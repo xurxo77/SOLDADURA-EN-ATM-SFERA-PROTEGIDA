@@ -41,6 +41,20 @@ legend{font-weight:700;padding:0 4px}
 .blq .chk{flex:1}
 .solo{font:inherit;font-size:.8rem;font-weight:700;padding:.15rem .55rem;min-height:0;border-width:1.5px;background:transparent;color:var(--violet);margin-top:3px;white-space:nowrap}
 .blq.vacio{opacity:.45}
+textarea{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:.5rem .65rem;width:100%}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{cursor:pointer}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-block;border:2px solid var(--line);border-radius:999px;padding:.5rem 1.1rem;font-weight:700;background:var(--paper)}
+.seg input:checked+span{border-color:var(--violet);background:var(--violet);color:#fff}
+.seg input:focus-visible+span{outline:3px solid var(--violet);outline-offset:2px}
+.hoja .cab .dat{font-size:10pt}
+.hoja h3.parte{border-bottom:1.5px solid #111;padding-bottom:2px}
+.hoja .lineas{margin-top:6px}
+.hoja .lineas div{border-bottom:1px solid #bbb;height:1.55em}
+.hoja .pts{font-size:9pt;color:#444;font-weight:700}
+.hoja ul.guion{margin:2px 0 0;padding-left:1.1rem}
+.hoja .dif{font-size:8pt;border:1px solid #999;border-radius:3px;padding:0 3px;margin-left:4px;color:#444}
 .hoja .vin{display:block;font-size:8.5pt;color:#555;margin-top:1px}
 .hoja .vin b{color:#333}
 .ayuda{color:var(--ink2);font-size:.92rem;margin-top:6px}
@@ -86,9 +100,9 @@ button:disabled{opacity:.45;cursor:not-allowed}
 </head>
 <body>
 <header class="top"><div class="in">
-  <a href="index.html">← Volver a los apuntes</a>
+  <a href="index.html">← Volver a la entrada</a>
   <h1>Preparar una prueba</h1>
-  <p class="intro">Para docentes. Eliges el módulo y los bloques, y sale un examen tipo test listo para imprimir, con dos versiones y la hoja de respuestas aparte.</p>
+  <p class="intro">Modo profesor. Eliges módulo, bloques, tipo de preguntas y dificultad, y sale la prueba lista para imprimir, con versiones y solucionario aparte.</p>
 </div></header>
 
 <main>
@@ -112,31 +126,57 @@ button:disabled{opacity:.45;cursor:not-allowed}
   </section>
 
   <section class="panel">
-    <h2><span class="paso">3</span>Cómo es la prueba</h2>
-    <div class="fila">
-      <div><label for="titulo">Título</label><input type="text" id="titulo" value="Prueba escrita"></div>
-      <div><label for="centro">Centro y grupo</label><input type="text" id="centro" placeholder="IES ACCI · 1.º CFGM"></div>
-      <div><label for="fecha">Fecha</label><input type="date" id="fecha"></div>
+    <h2><span class="paso">3</span>Tipo de preguntas y dificultad</h2>
+    <div class="seg" role="radiogroup" aria-label="Tipo de preguntas">
+      <label><input type="radio" name="tipo" value="test" checked><span>Respuesta múltiple</span></label>
+      <label><input type="radio" name="tipo" value="desarrollo"><span>Desarrollo</span></label>
+      <label><input type="radio" name="tipo" value="mixto"><span>Las dos</span></label>
+    </div>
+    <div class="seg" role="radiogroup" aria-label="Dificultad" style="margin-top:10px">
+      <label><input type="radio" name="dif" value="bajo"><span>Dificultad baja</span></label>
+      <label><input type="radio" name="dif" value="medio" checked><span>Media</span></label>
+      <label><input type="radio" name="dif" value="alto"><span>Alta</span></label>
+    </div>
+    <p class="ayuda" id="difAyuda"></p>
+    <div class="fila" style="margin-top:12px">
+      <div id="numTBox"><label for="num">Preguntas de respuesta múltiple <small class="disp" id="dispT"></small></label><input type="number" id="num" min="0" value="20"></div>
+      <div id="numDBox"><label for="numD">Preguntas de desarrollo <small class="disp" id="dispD"></small></label><input type="number" id="numD" min="0" value="3"></div>
+      <div id="ptsBox"><label for="ptsT">Puntos del test (sobre 10)</label><input type="number" id="ptsT" min="0" max="10" step="0.5" value="6"></div>
     </div>
     <div class="fila" style="margin-top:12px">
-      <div><label for="num">Número de preguntas</label><input type="number" id="num" min="1" value="20"></div>
       <div><label for="vers">Versiones</label><select id="vers"><option value="1">Una (A)</option><option value="2" selected>Dos (A y B)</option><option value="3">Tres (A, B y C)</option></select></div>
-      <div><label for="penal">Penalización por fallo</label><select id="penal"><option value="0">Sin penalización</option><option value="0.33">Resta 1/3 de acierto</option><option value="0.5">Resta 1/2 de acierto</option></select></div>
+      <div id="penalBox"><label for="penal">Penalización por fallo</label><select id="penal"><option value="0">Sin penalización</option><option value="0.33">Resta 1/3 de acierto</option><option value="0.5">Resta 1/2 de acierto</option></select></div>
+      <div id="espBox"><label for="esp">Espacio para responder</label><select id="esp"><option value="6">Corto</option><option value="10" selected>Medio</option><option value="16">Largo</option></select></div>
     </div>
     <div style="margin-top:12px">
-      <label class="chk"><input type="checkbox" id="barajarOps" checked> <span>Barajar también las opciones de cada pregunta</span></label>
-      <label class="chk"><input type="checkbox" id="explic" checked> <span>Poner la explicación de cada respuesta en el solucionario</span></label>
+      <label class="chk" id="barBox"><input type="checkbox" id="barajarOps" checked> <span>Barajar también las opciones de cada pregunta</span></label>
+      <label class="chk"><input type="checkbox" id="explic" checked> <span>Poner en el solucionario la explicación de cada respuesta</span></label>
       <label class="chk"><input type="checkbox" id="vinculo" checked> <span>Poner debajo de cada pregunta su RA y CE</span></label>
-      <label class="chk"><input type="checkbox" id="origen"> <span>Poner también de qué tema y bloque sale</span></label>
+      <label class="chk"><input type="checkbox" id="verDif"> <span>Poner la dificultad de cada pregunta</span></label>
+      <label class="chk"><input type="checkbox" id="origen"> <span>Poner de qué tema y bloque sale</span></label>
     </div>
     <div class="fila" style="margin-top:12px">
-      <div><label for="abiertas">Preguntas abiertas tuyas (una por línea, opcional)</label>
-      <textarea id="abiertas" rows="3" style="font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:.5rem .65rem" placeholder="Explica cómo regulas el gas de protección antes de soldar."></textarea></div>
+      <div><label for="abiertas">Preguntas de desarrollo tuyas (una por línea, opcional)</label>
+      <textarea id="abiertas" rows="3" placeholder="Explica cómo regulas el gas de protección antes de soldar."></textarea></div>
     </div>
+  </section>
+
+  <section class="panel">
+    <h2><span class="paso">4</span>Datos de la prueba</h2>
+    <div class="fila">
+      <div><label for="titulo">Título</label><input type="text" id="titulo" value="Prueba escrita"></div>
+      <div><label for="profe">Profesor o profesora</label><input type="text" id="profe" autocomplete="name"></div>
+    </div>
+    <div class="fila" style="margin-top:12px">
+      <div><label for="centro">Centro</label><input type="text" id="centro" placeholder="IES ACCI (Guadix)"></div>
+      <div><label for="grupo">Curso y grupo</label><input type="text" id="grupo" placeholder="1.º CFGM Soldadura y Calderería"></div>
+      <div><label for="fecha">Fecha</label><input type="date" id="fecha"></div>
+    </div>
+    <p class="ayuda">El profesor, el centro y el grupo se guardan en este navegador para la próxima vez.</p>
     <div class="btns">
       <button type="button" id="gen">Generar la prueba</button>
     </div>
-    <p class="aviso">Las preguntas salen de los tests de los apuntes, que el alumnado también puede ver. Para una prueba que cuente nota, añade preguntas abiertas tuyas.</p>
+    <p class="aviso">Las preguntas salen de los apuntes, que el alumnado también puede ver. Para una prueba que cuente nota, añade preguntas de desarrollo tuyas.</p>
   </section>
 </div>
 
@@ -153,45 +193,57 @@ button:disabled{opacity:.45;cursor:not-allowed}
 
 <script>
 (function(){
-  var B=window.BANCO, $=function(s){return document.querySelector(s)};
-  var LET="abcdefgh";
+  var B=window.BANCO, $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+  var LET="abcdefgh", VN="ABC";
   var temaPorId={};B.temas.forEach(function(t){temaPorId[t.id]=t});
+  function radio(n){return document.querySelector('input[name="'+n+'"]:checked').value}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 
   // 1. Módulos agrupados por ciclo
   var sel=$("#modulo"),ciclos={};
   Object.keys(B.modulos).forEach(function(c){var m=B.modulos[c];(ciclos[m.ciclo]=ciclos[m.ciclo]||[]).push(c)});
-  sel.innerHTML='<option value="">Todos los temas</option>'+Object.keys(ciclos).map(function(ci){
+  sel.innerHTML='<option value="">Todos los temas</option>'+Object.keys(ciclos).sort(function(a,b){return (b.indexOf("CFGM")===0)-(a.indexOf("CFGM")===0)}).map(function(ci){
     return '<optgroup label="'+ci+'">'+ciclos[ci].map(function(c){return '<option value="'+c+'">'+c+' · '+B.modulos[c].nombre+(B.curriculo[c]?'':' (sin RA/CE todavía)')+'</option>'}).join("")+'</optgroup>';
   }).join("");
 
-  // 2. Temas y bloques (el recuento depende del módulo elegido)
+  // 2. Temas, bloques y RA
   function delModulo(p){var c=sel.value;return !c||p.mods.indexOf(c)>=0}
   $("#temas").innerHTML=B.temas.map(function(t){
     return '<fieldset data-tema="'+t.id+'"><legend><label class="chk"><input type="checkbox" class="todo"> '+t.nombre+'</label></legend>'+
       t.bloques.map(function(b){return '<div class="blq" data-b="'+t.id+'|'+b.n+'"><label class="chk"><input type="checkbox" class="bl" value="'+t.id+'|'+b.n+'"> <span>Bloque '+b.n+' · '+b.nombre+' <small class="nb"></small></span></label><button type="button" class="solo sec">solo este</button></div>'}).join("")+'</fieldset>';
   }).join("");
-  function marcados(){return Array.prototype.map.call(document.querySelectorAll(".bl:checked"),function(i){return i.value})}
-  function rasFuera(){return Array.prototype.map.call(document.querySelectorAll(".rachk:not(:checked)"),function(i){return i.value})}
+  function marcados(){return $$(".bl:checked").map(function(i){return i.value})}
+  function rasFuera(){return $$(".rachk:not(:checked)").map(function(i){return i.value})}
   function base(){var m=marcados();return B.preguntas.filter(function(p){return delModulo(p)&&m.indexOf(p.tema+"|"+p.bloque)>=0})}
   function pool(){var f=rasFuera(),c=sel.value;return base().filter(function(p){return !(p.mod===c&&f.indexOf(p.ra)>=0)})}
+  function deTipo(l,t){return l.filter(function(p){return p.tipo===t})}
   function pintaRAs(){
     var c=sel.value,cur=B.curriculo[c];
     $("#raBox").hidden=!cur;if(!cur){$("#ras").innerHTML="";return}
     $("#ras").innerHTML=Object.keys(cur.ra).map(function(r){return '<label class="chk"><input type="checkbox" class="rachk" value="'+r+'" checked> <span><b>'+r+'</b> · '+cur.ra[r]+' <small class="nr" data-r="'+r+'"></small></span></label>'}).join("");
   }
+  var AYUDA={bajo:"Sobre todo preguntas de recordar datos y definiciones.",medio:"Mezcla equilibrada: sobre todo casos del taller, con alguna fácil y alguna difícil.",alto:"Sobre todo cuentas, diagnóstico de defectos y razonar causas."};
   function refresca(){
-    document.querySelectorAll(".blq").forEach(function(d){
-      var k=d.getAttribute("data-b"),n=B.preguntas.filter(function(p){return delModulo(p)&&p.tema+"|"+p.bloque===k}).length;
-      d.querySelector(".nb").textContent="("+n+")";d.classList.toggle("vacio",n===0);
+    $$(".blq").forEach(function(d){
+      var k=d.getAttribute("data-b"),l=B.preguntas.filter(function(p){return delModulo(p)&&p.tema+"|"+p.bloque===k});
+      d.querySelector(".nb").textContent="("+deTipo(l,"test").length+" test · "+deTipo(l,"desarrollo").length+" desarrollo)";d.classList.toggle("vacio",l.length===0);
     });
-    document.querySelectorAll("fieldset[data-tema]").forEach(function(f){
+    $$("fieldset[data-tema]").forEach(function(f){
       var bs=f.querySelectorAll(".bl"),on=f.querySelectorAll(".bl:checked").length,todo=f.querySelector(".todo");
       todo.checked=on===bs.length;todo.indeterminate=on>0&&on<bs.length;
     });
     var bp=base();
-    document.querySelectorAll(".nr").forEach(function(s){var r=s.getAttribute("data-r");s.textContent="("+bp.filter(function(p){return p.mod===sel.value&&p.ra===r}).length+")"});
-    var n=pool().length;$("#disp").textContent=n;$("#num").max=n;
-    $("#gen").disabled=n===0&&!$("#abiertas").value.trim();
+    $$(".nr").forEach(function(s){var r=s.getAttribute("data-r");s.textContent="("+bp.filter(function(p){return p.mod===sel.value&&p.ra===r}).length+")"});
+    var P=pool(),nt=deTipo(P,"test").length,nd=deTipo(P,"desarrollo").length,tipo=radio("tipo");
+    $("#disp").textContent=nt+" de respuesta múltiple y "+nd+" de desarrollo";
+    $("#dispT").textContent="(hay "+nt+")";$("#dispD").textContent="(hay "+nd+")";
+    $("#num").max=nt;$("#numD").max=nd;
+    $("#numTBox").hidden=$("#penalBox").hidden=$("#barBox").hidden=tipo==="desarrollo";
+    $("#numDBox").hidden=$("#espBox").hidden=tipo==="test";
+    $("#ptsBox").hidden=tipo!=="mixto";
+    $("#difAyuda").textContent=AYUDA[radio("dif")];
+    var hay=(tipo!=="desarrollo"&&nt>0)||(tipo!=="test"&&(nd>0||$("#abiertas").value.trim()));
+    $("#gen").disabled=!hay;
   }
   $("#temas").addEventListener("change",function(e){
     if(e.target.classList.contains("todo"))e.target.closest("fieldset").querySelectorAll(".bl").forEach(function(i){i.checked=e.target.checked});
@@ -199,99 +251,160 @@ button:disabled{opacity:.45;cursor:not-allowed}
   });
   $("#temas").addEventListener("click",function(e){
     if(!e.target.classList.contains("solo"))return;
-    document.querySelectorAll(".bl").forEach(function(i){i.checked=false});
-    document.querySelectorAll(".rachk").forEach(function(i){i.checked=true});
+    $$(".bl").forEach(function(i){i.checked=false});
+    $$(".rachk").forEach(function(i){i.checked=true});
     var d=e.target.closest(".blq");d.querySelector(".bl").checked=true;
-    var t=temaPorId[d.getAttribute("data-b").split("|")[0]],bn=+d.getAttribute("data-b").split("|")[1];
+    var k=d.getAttribute("data-b").split("|"),t=temaPorId[k[0]],bn=+k[1];
     var bl=t.bloques.filter(function(b){return b.n===bn})[0];
     $("#titulo").value="Prueba escrita · "+t.nombre+" · Bloque "+bn+" ("+bl.nombre+")";
-    refresca();$("#num").value=pool().length;
+    refresca();
+    var P=pool();$("#num").value=deTipo(P,"test").length;$("#numD").value=Math.min(3,deTipo(P,"desarrollo").length);
   });
   $("#ras").addEventListener("change",refresca);
+  $$('input[name="tipo"],input[name="dif"]').forEach(function(i){i.addEventListener("change",refresca)});
+  $("#abiertas").addEventListener("input",refresca);
   function ponModulo(){
     var c=sel.value;
     B.temas.forEach(function(t){
       var on=!c||t.modulos.indexOf(c)>=0;
-      document.querySelectorAll('fieldset[data-tema="'+t.id+'"] .bl').forEach(function(i){i.checked=on});
+      $$('fieldset[data-tema="'+t.id+'"] .bl').forEach(function(i){i.checked=on});
     });
     $("#titulo").value=c?"Prueba escrita · "+c+" "+B.modulos[c].nombre:"Prueba escrita";
     pintaRAs();refresca();
   }
+  sel.addEventListener("change",ponModulo);
+  $("#fecha").valueAsDate=new Date();
+
+  // Datos del docente: se recuerdan en este navegador
+  ["profe","centro","grupo"].forEach(function(id){
+    try{var v=localStorage.getItem("prep_"+id);if(v)$("#"+id).value=v}catch(e){}
+    $("#"+id).addEventListener("input",function(){try{localStorage.setItem("prep_"+id,this.value)}catch(e){}});
+  });
+
+  // Entrar con ?modulo=0094 o ?tema=tig&bloque=2
+  var qs=new URLSearchParams(location.search);
+  if(qs.get("modulo")&&B.modulos[qs.get("modulo")])sel.value=qs.get("modulo");
+  ponModulo();
+  if(qs.get("tema")&&qs.get("bloque")){var bt=document.querySelector('.blq[data-b="'+qs.get("tema")+'|'+qs.get("bloque")+'"] .solo');if(bt)bt.click()}
+
   function vin(p){
     if(!p.mod)return "";
-    var cur=B.curriculo[p.mod];
-    return p.mod+" · "+p.ra+" ("+cur.ra[p.ra]+") · CE "+p.ce.split("-CE")[1];
+    return p.mod+" · "+p.ra+" ("+B.curriculo[p.mod].ra[p.ra]+") · CE "+p.ce.split("-CE")[1];
   }
-  sel.addEventListener("change",ponModulo);
-  $("#abiertas").addEventListener("input",refresca);
-  $("#fecha").valueAsDate=new Date();
-  ponModulo();
 
   // 3. Azar con semilla: el mismo código da la misma prueba
   function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
   function baraja(a,r){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),x=a[i];a[i]=a[j];a[j]=x}return a}
-  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+  // Reparto por dificultad: proporción de preguntas bajas, medias y altas
+  var PESOS={bajo:{bajo:.6,medio:.3,alto:.1},medio:{bajo:.25,medio:.5,alto:.25},alto:{bajo:.1,medio:.35,alto:.55}};
+  var ORDEN={bajo:["bajo","medio","alto"],medio:["medio","bajo","alto"],alto:["alto","medio","bajo"]};
+  function elige(lista,n,dif,r){
+    n=Math.min(n,lista.length);
+    var porNivel={bajo:[],medio:[],alto:[]};baraja(lista,r).forEach(function(p){porNivel[p.dif].push(p)});
+    var w=PESOS[dif],quiero={},sum=0;
+    ["bajo","medio","alto"].forEach(function(d){quiero[d]=Math.round(n*w[d]);sum+=quiero[d]});
+    quiero[ORDEN[dif][0]]+=n-sum; // ajuste de redondeo
+    var out=[];
+    ["bajo","medio","alto"].forEach(function(d){out=out.concat(porNivel[d].splice(0,Math.max(0,quiero[d])))});
+    // si en un nivel no hay bastantes, se completa con los niveles más cercanos
+    ORDEN[dif].forEach(function(d){while(out.length<n&&porNivel[d].length)out.push(porNivel[d].shift())});
+    return baraja(out,r);
+  }
+  function cuentaDif(l){var c={bajo:0,medio:0,alto:0};l.forEach(function(p){c[p.dif]++});return "baja "+c.bajo+" · media "+c.medio+" · alta "+c.alto}
+  function redondea(x){return Math.round(x*100)/100}
 
   var semilla=0;
   function genera(nueva){
     if(nueva||!semilla)semilla=Math.floor(Math.random()*900000)+100000;
-    var r=rng(semilla),P=pool(),n=Math.min(+$("#num").value||0,P.length);
-    var elegidas=baraja(P,r).slice(0,n);
-    var nv=+$("#vers").value,barOps=$("#barajarOps").checked,penal=+$("#penal").value;
-    var abiertas=$("#abiertas").value.split("\n").map(function(s){return s.trim()}).filter(Boolean);
-    var titulo=esc($("#titulo").value||"Prueba escrita"),centro=esc($("#centro").value);
-    var f=$("#fecha").value?new Date($("#fecha").value).toLocaleDateString("es-ES"):"";
+    var r=rng(semilla),P=pool(),tipo=radio("tipo"),dif=radio("dif");
+    var test=tipo==="desarrollo"?[]:elige(deTipo(P,"test"),+$("#num").value||0,dif,r);
+    var des=tipo==="test"?[]:elige(deTipo(P,"desarrollo"),+$("#numD").value||0,dif,r);
+    var propias=tipo==="test"?[]:$("#abiertas").value.split("\n").map(function(s){return s.trim()}).filter(Boolean);
+    var nDes=des.length+propias.length;
+    var nv=+$("#vers").value,barOps=$("#barajarOps").checked,penal=+$("#penal").value,lineas=+$("#esp").value;
+    var ptsT=test.length?(nDes?Math.min(10,Math.max(0,+$("#ptsT").value||0)):10):0, ptsD=nDes?10-ptsT:0;
+    var ptsPorD=nDes?redondea(ptsD/nDes):0, ptsPorT=test.length?redondea(ptsT/test.length):0;
+    var titulo=esc($("#titulo").value||"Prueba escrita"),centro=esc($("#centro").value),grupo=esc($("#grupo").value),profe=esc($("#profe").value);
+    var f=$("#fecha").value?new Date($("#fecha").value+"T12:00").toLocaleDateString("es-ES"):"";
+    var difTxt={bajo:"baja",medio:"media",alto:"alta"};
+    function notas(p){
+      var n=[];
+      if($("#vinculo").checked&&p.mod)n.push('<b>'+esc(vin(p))+'</b>');
+      if($("#verDif").checked)n.push('dificultad '+difTxt[p.dif]);
+      if($("#origen").checked)n.push(esc(temaPorId[p.tema].nombre)+', bloque '+p.bloque);
+      return n.length?'<span class="vin">'+n.join(' · ')+'</span>':'';
+    }
     var versiones=[];
     for(var v=0;v<nv;v++){
-      var orden=v===0?elegidas:baraja(elegidas,r);
+      var orden=v===0?test:baraja(test,r);
       versiones.push(orden.map(function(p){
-        var idx=p.o.map(function(_,i){return i});
-        if(barOps)idx=baraja(idx,r);
+        var idx=p.o.map(function(_,i){return i});if(barOps)idx=baraja(idx,r);
         return {p:p,idx:idx,ok:idx.indexOf(p.a)};
       }));
     }
-    var html="",VN="ABC";
-    var instr="Marca una sola respuesta en cada pregunta."+(penal?" Cada fallo resta "+(penal===0.5?"media":"un tercio de")+" respuesta correcta; en blanco no resta.":" Los fallos no restan.");
-    versiones.forEach(function(V,v){
-      html+='<section class="hoja"><div class="cab"><div class="t">'+titulo+'</div>'+(nv>1?'<div class="ver">Versión '+VN[v]+'</div>':'')+
-        '<div>Nombre: <span class="linea"></span></div><div>Fecha: '+f+'</div>'+(centro?'<div>'+centro+'</div>':'')+'</div>'+
-        '<p class="instr">'+instr+'</p><ol class="preg">'+V.map(function(x){
-          var t=temaPorId[x.p.tema];
-          var notas=[];
-          if($("#vinculo").checked&&x.p.mod)notas.push('<b>'+esc(vin(x.p))+'</b>');
-          if($("#origen").checked)notas.push(esc(t.nombre)+', bloque '+x.p.bloque);
-          return '<li>'+esc(x.p.q)+(notas.length?'<span class="vin">'+notas.join(' · ')+'</span>':'')+
-            '<ol class="ops">'+x.idx.map(function(i,k){return '<li><b>'+LET[k]+')</b>'+esc(x.p.o[i])+'</li>'}).join("")+'</ol></li>';
-        }).join("")+'</ol>'+
-        (abiertas.length?'<h3>Preguntas para desarrollar</h3><ol class="preg huecos" start="'+(V.length+1)+'">'+abiertas.map(function(a){return '<li>'+esc(a)+'</li>'}).join("")+'</ol>':'')+
-        '<p class="pie">Preguntas tomadas de los apuntes de soldadura de Xurxo · código '+semilla+'</p></section>';
-    });
-    // Solucionario
-    html+='<section class="hoja"><div class="cab"><div class="t">Solucionario · '+titulo+'</div><div>Solo para el docente</div><div>Código '+semilla+'</div></div>';
-    html+='<h3>Respuestas</h3><table><tr><th>Pregunta</th>'+versiones.map(function(_,v){return '<th>Versión '+VN[v]+'</th>'}).join("")+'</tr>';
-    for(var i=0;i<n;i++){
-      html+='<tr><td>'+(i+1)+'</td>'+versiones.map(function(V){return '<td class="r">'+LET[V[i].ok]+'</td>'}).join("")+'</tr>';
+    var html="";
+    var instrT="Marca una sola respuesta en cada pregunta."+(penal?" Cada fallo resta "+(penal===0.5?"media":"un tercio de")+" respuesta correcta; en blanco no resta.":" Los fallos no restan.");
+    function cabecera(extra){
+      return '<div class="cab"><div class="t">'+titulo+'</div>'+extra+
+        '<div class="dat">Alumno/a: <span class="linea"></span></div><div class="dat">Fecha: '+f+'</div>'+
+        ((centro||grupo)?'<div class="dat">'+[centro,grupo].filter(Boolean).join(' · ')+'</div>':'')+
+        (profe?'<div class="dat">Profesor/a: '+profe+'</div>':'')+'</div>';
     }
-    html+='</table>';
-    // Qué criterios evalúa la prueba (para llevarlo a Nexus)
+    versiones.forEach(function(V,v){
+      var partes=[],num=0;
+      if(V.length){
+        partes.push((nDes?'<h3 class="parte">Parte A · Respuesta múltiple <span class="pts">('+redondea(ptsT)+' puntos)</span></h3>':'')+
+          '<p class="instr">'+instrT+'</p><ol class="preg">'+V.map(function(x){
+            return '<li>'+esc(x.p.q)+notas(x.p)+'<ol class="ops">'+x.idx.map(function(i,k){return '<li><b>'+LET[k]+')</b>'+esc(x.p.o[i])+'</li>'}).join("")+'</ol></li>';
+          }).join("")+'</ol>');
+        num=V.length;
+      }
+      if(nDes){
+        var renglones='<div class="lineas">'+new Array(lineas+1).join('<div></div>')+'</div>';
+        partes.push('<h3 class="parte">'+(V.length?'Parte B · ':'')+'Desarrollo <span class="pts">('+redondea(ptsD)+' puntos, '+ptsPorD+' cada pregunta)</span></h3>'+
+          '<p class="instr">Responde con frases cortas y claras. Puedes ayudarte de un dibujo.</p><ol class="preg" start="'+(num+1)+'">'+
+          des.map(function(p){return '<li>'+esc(p.q)+notas(p)+renglones+'</li>'}).join("")+
+          propias.map(function(q){return '<li>'+esc(q)+renglones+'</li>'}).join("")+'</ol>');
+      }
+      html+='<section class="hoja">'+cabecera(nv>1?'<div class="ver">Versión '+VN[v]+'</div>':'')+partes.join("")+
+        '<p class="pie">Preguntas de los apuntes de soldadura de Xurxo · código '+semilla+'</p></section>';
+    });
+
+    // Solucionario
+    html+='<section class="hoja"><div class="cab"><div class="t">Solucionario · '+titulo+'</div><div class="dat">Solo para el docente'+(profe?' · '+profe:'')+'</div><div class="dat">Código '+semilla+'</div></div>';
+    if(test.length){
+      html+='<h3>Respuesta múltiple</h3><table><tr><th>Pregunta</th>'+versiones.map(function(_,v){return '<th>Versión '+VN[v]+'</th>'}).join("")+'</tr>';
+      for(var i=0;i<test.length;i++)html+='<tr><td>'+(i+1)+'</td>'+versiones.map(function(V){return '<td class="r">'+LET[V[i].ok]+'</td>'}).join("")+'</tr>';
+      html+='</table><p class="instr">Cada acierto vale '+ptsPorT+' puntos'+(penal?'; cada fallo resta '+redondea(ptsPorT*penal):'')+'.</p>';
+    }
+    if(nDes){
+      html+='<h3>Desarrollo: guion de corrección</h3><p class="instr">Cada pregunta vale '+ptsPorD+' puntos. Reparte la nota entre los puntos del guion.</p><table>'+
+        des.map(function(p,i){return '<tr><td class="r">'+(test.length+i+1)+'</td><td>'+esc(p.q)+'<ul class="guion">'+p.guion.map(function(g){return '<li>'+esc(g)+'</li>'}).join("")+'</ul><small>'+esc(temaPorId[p.tema].nombre)+' · bloque '+p.bloque+(p.mod?' · '+esc(vin(p)):'')+'</small></td></tr>'}).join("")+
+        propias.map(function(q,i){return '<tr><td class="r">'+(test.length+des.length+i+1)+'</td><td>'+esc(q)+'<br><small>Pregunta propia: sin guion.</small></td></tr>'}).join("")+'</table>';
+    }
+    // Criterios que evalúa (para llevarlo a Nexus)
     var porCE={};
-    versiones[0].forEach(function(x,i){if(!x.p.mod)return;var k=x.p.mod+" "+x.p.ce;(porCE[k]=porCE[k]||[]).push(i+1)});
+    test.forEach(function(p,i){if(p.mod){var k=p.mod+" "+p.ce;(porCE[k]=porCE[k]||[]).push(i+1)}});
+    des.forEach(function(p,i){if(p.mod){var k=p.mod+" "+p.ce;(porCE[k]=porCE[k]||[]).push(test.length+i+1)}});
     var ks=Object.keys(porCE).sort(function(a,b){return a.localeCompare(b,"es",{numeric:true})});
     if(ks.length){
-      html+='<h3>Criterios que evalúa (numeración de la versión A)</h3><table><tr><th>Módulo · RA · CE</th><th>Criterio (redacción de Nexus)</th><th>Preguntas</th></tr>'+ks.map(function(k){
+      html+='<h3>Criterios que evalúa'+(nv>1?' (numeración de la versión A)':'')+'</h3><table><tr><th>Módulo · RA · CE</th><th>Criterio (redacción de Nexus)</th><th>Preguntas</th></tr>'+ks.map(function(k){
         var m=k.split(" ")[0],ce=k.split(" ")[1],cur=B.curriculo[m],ra=ce.split("-")[0];
         return '<tr><td><b>'+m+' · '+ra+' · CE '+ce.split("-CE")[1]+'</b><br><small>'+esc(cur.ra[ra])+'</small></td><td>'+esc(cur.ce[ce])+'</td><td>'+porCE[k].join(", ")+'</td></tr>';
       }).join("")+'</table>';
     }
-    if($("#explic").checked&&n){
-      html+='<h3>Por qué (orden de la versión A)</h3><table>'+versiones[0].map(function(x,i){
-        var t=temaPorId[x.p.tema];
-        return '<tr><td class="r">'+(i+1)+' '+LET[x.ok]+'</td><td>'+esc(x.p.o[x.p.a])+'. '+esc(x.p.e)+'<br><small>'+esc(t.nombre)+' · bloque '+x.p.bloque+(x.p.mod?' · '+esc(vin(x.p)):'')+'</small></td></tr>';
+    if($("#explic").checked&&test.length){
+      html+='<h3>Por qué'+(nv>1?' (orden de la versión A)':'')+'</h3><table>'+versiones[0].map(function(x,i){
+        return '<tr><td class="r">'+(i+1)+' '+LET[x.ok]+'</td><td>'+esc(x.p.o[x.p.a])+'. '+esc(x.p.e)+'<br><small>'+esc(temaPorId[x.p.tema].nombre)+' · bloque '+x.p.bloque+' · dificultad '+difTxt[x.p.dif]+(x.p.mod?' · '+esc(vin(x.p)):'')+'</small></td></tr>';
       }).join("")+'</table>';
     }
-    html+='<p class="pie">Nota: aciertos'+(penal?' − fallos × '+(penal===0.5?'1/2':'1/3'):'')+', sobre '+n+'.</p></section>';
+    html+='</section>';
     $("#hojas").innerHTML=html;
-    $("#codigo").textContent="Código de esta tirada: "+semilla+" · "+n+" preguntas de "+P.length+" disponibles"+(n<(+$("#num").value)?" (no hay más con lo marcado)":"")+".";
+    var aviso=[];
+    if(tipo!=="desarrollo"&&test.length<(+$("#num").value||0))aviso.push("no hay más preguntas de test con lo marcado");
+    if(tipo!=="test"&&des.length<(+$("#numD").value||0))aviso.push("no hay más preguntas de desarrollo con lo marcado");
+    $("#codigo").textContent="Código de esta tirada: "+semilla+" · "+(test.length?test.length+" de test ("+cuentaDif(test)+")":"")+(test.length&&nDes?" + ":"")+(nDes?nDes+" de desarrollo"+(des.length?" ("+cuentaDif(des)+")":""):"")+(aviso.length?" · Ojo: "+aviso.join(" y "):"")+".";
     $("#config").style.display="none";$("#salida").classList.add("on");window.scrollTo(0,0);
   }
   $("#gen").addEventListener("click",function(){genera(true)});
