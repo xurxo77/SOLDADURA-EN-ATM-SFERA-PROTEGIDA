@@ -7,8 +7,8 @@
 <meta name="description" content="Apuntes visuales de MIG-MAG y TIG para el CFGM de Soldadura y Calderería.">
 <meta name="theme-color" content="#2450E6">
 <style>
-:root{--paper:#F1F3F6;--card:#fff;--ink:#141C28;--ink2:#465364;--line:#D3D9E0;--arc:#2450E6;--arc-soft:#E3E9FF;--gas:#0B857B;--gas-soft:#D9F2EF}
-@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--arc:#8FA8FF;--arc-soft:#1A2544;--gas:#4FD1C5;--gas-soft:#12302D}}
+:root{--paper:#F1F3F6;--card:#fff;--ink:#141C28;--ink2:#465364;--line:#D3D9E0;--arc:#2450E6;--arc-soft:#E3E9FF;--gas:#0B857B;--gas-soft:#D9F2EF;--molten:#C74A08;--molten-soft:#FFE8DA}
+@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--arc:#8FA8FF;--arc-soft:#1A2544;--gas:#4FD1C5;--gas-soft:#12302D;--molten:#FF9159;--molten-soft:#33200F}}
 *{box-sizing:border-box;margin:0}
 body{background:var(--paper);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45;min-height:100vh;display:flex;flex-direction:column}
 main{max-width:640px;width:100%;margin:0 auto;padding:40px 20px 24px;flex:1}
@@ -22,6 +22,8 @@ a.tarjeta p{color:var(--ink2);margin-top:4px}
 a.tarjeta span{display:inline-block;margin-top:12px;background:var(--cs);color:var(--c);font-weight:700;padding:6px 12px;border-radius:999px;font-size:.9rem}
 .mig{--c:var(--arc);--cs:var(--arc-soft)}
 .tig{--c:var(--gas);--cs:var(--gas-soft)}
+.corte{--c:var(--molten);--cs:var(--molten-soft)}
+h3.sec{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:28px 0 12px}
 footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:20px}
 </style>
 </head>
@@ -40,6 +42,13 @@ footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:20px}
   <a class="tarjeta tig" href="tig.html">
     <h2>TIG</h2>
     <p>Fundamentos, el equipo, la técnica de soldeo y los defectos más habituales.</p>
+    <span>Abrir apuntes →</span>
+  </a>
+
+  <h3 class="sec">También en el taller</h3>
+  <a class="tarjeta corte" href="corte.html">
+    <h2>Corte y resanado</h2>
+    <p>Oxicorte, plasma y arco-aire: el equipo, cómo cortar, los defectos del corte y cómo resanar soldaduras.</p>
     <span>Abrir apuntes →</span>
   </a>
 </main>
