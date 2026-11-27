@@ -14,6 +14,7 @@ Apuntes visuales y pruebas escritas para el CFGM de Soldadura y Calderería y la
 | `migmag.html` | Soldadura MIG-MAG (4 bloques) |
 | `tig.html` | Soldadura TIG (4 bloques) |
 | `corte.html` | Corte y resanado: oxicorte, plasma y arco-aire (5 bloques) |
+| `trazado.html` | Trazado de desarrollos: tolva de cuadrado a redondo por triangulación, con animación paso a paso (muestra, 1 bloque) |
 | `montaje.html` | Montaje de construcciones metálicas (4 bloques) |
 | `tuberia.html` | Tubería industrial (5 bloques) |
 | `img/` | Fotos pequeñas de las tarjetas de los temas |

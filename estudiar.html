@@ -59,7 +59,7 @@ a.mod p{color:var(--ink2);font-size:.92rem}
 .tema ol .n{font-weight:700;color:var(--c);white-space:nowrap}
 .tema ol .rr{display:block;font-size:.8rem;color:var(--ink2)}
 .tema .todo{margin-top:10px;font-weight:700;color:var(--c);text-decoration:none}
-.c-electrodo{--c:var(--warn)}.c-migmag{--c:var(--arc)}.c-tig{--c:var(--gas)}.c-corte{--c:var(--molten)}.c-montaje,.c-tuberia{--c:var(--steel)}
+.c-electrodo{--c:var(--warn)}.c-migmag{--c:var(--arc)}.c-tig{--c:var(--gas)}.c-corte{--c:var(--molten)}.c-montaje,.c-tuberia{--c:var(--steel)}.c-trazado{--c:var(--molten)}
 .nota{margin-top:24px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;color:var(--ink2);font-size:.95rem}
 footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:24px 20px 32px}
 </style>
@@ -88,7 +88,7 @@ footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:24px 20px 32
 <script>
 (function(){
   var B=window.BANCO,$=function(s){return document.querySelector(s)};
-  var POS={migmag:"50% 40%",corte:"30% 50%"};
+  var POS={migmag:"50% 40%",corte:"30% 50%",trazado:"50% 20%"};
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   var temaPorId={};B.temas.forEach(function(t){temaPorId[t.id]=t});
 
