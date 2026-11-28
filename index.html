@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aula-taller de soldadura · Xurxo</title>
-<meta name="description" content="Aula-taller de soldadura para FP: apuntes visuales por módulo para el alumnado y pruebas escritas vinculadas a RA y CE para el profesorado.">
+<meta name="description" content="Aula-taller de soldadura para FP: apuntes visuales por módulo para el alumnado y planificación y pruebas para el profesorado.">
 <meta name="theme-color" content="#16314F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,35 +13,28 @@
 /* Entrada del aula-taller: dos puertas, estudiante y profesor */
 :root{
   --paper:#F1F3F6;--card:#fff;--ink:#141C28;--ink2:#465364;--line:#D3D9E0;--head:#16314F;--head-ink:#E8EEF5;
-  --arc:#2450E6;--gas:#0B857B;--molten:#C74A08;--steel:#4A5F78;--violet:#5B3FB8;
+  --arc:#2450E6;--violet:#5B3FB8;
   --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--head:#0B1826;--arc:#8FA8FF;--gas:#4FD1C5;--molten:#FF9159;--steel:#9DB2C8;--violet:#B7A4FF;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--head:#0B1826;--arc:#8FA8FF;--violet:#B7A4FF;color-scheme:dark}}
 *{box-sizing:border-box;margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.45;min-height:100vh;display:flex;flex-direction:column}
-header.top{background:var(--head);color:var(--head-ink);padding:48px max(20px,env(safe-area-inset-right)) 40px max(20px,env(safe-area-inset-left))}
-header.top .in,main,footer{max-width:960px;margin:0 auto;width:100%}
-.etq{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;opacity:.8}
-h1{font-family:var(--f-head);font-size:clamp(2.4rem,7vw,3.6rem);line-height:1;margin:10px 0 12px;text-transform:uppercase;letter-spacing:.01em}
-.lema{font-family:var(--f-head);font-size:clamp(1.3rem,3.6vw,1.7rem);font-weight:600;letter-spacing:.03em;color:#FFB27A;margin:-4px 0 14px}
-.intro{max-width:38rem;opacity:.9;font-size:1.05rem}
-.autor{margin-top:10px;font-size:1.05rem;opacity:.95}
+header.top{background:var(--head);color:var(--head-ink);padding:22px max(20px,env(safe-area-inset-right)) 20px max(20px,env(safe-area-inset-left))}
+header.top .in,main,footer{max-width:720px;margin:0 auto;width:100%}
+h1{font-family:var(--f-head);font-size:clamp(2rem,6vw,2.8rem);line-height:1;text-transform:uppercase;letter-spacing:.01em}
+.lema{font-size:.95rem;opacity:.8;margin-top:6px}
 main{padding:28px max(20px,env(safe-area-inset-right)) 24px max(20px,env(safe-area-inset-left));flex:1}
-h2{font-family:var(--f-head);font-size:1.7rem;text-transform:uppercase;letter-spacing:.02em;margin-bottom:14px}
-.puertas{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
-a.puerta{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-top:8px solid var(--c);border-radius:14px;padding:22px 22px 20px;transition:transform .12s,border-color .12s}
+.puertas{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+a.puerta{display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:14px;padding:22px 20px;transition:transform .12s,border-color .12s}
 a.puerta:hover{border-color:var(--c)}
 a.puerta:active{transform:scale(.985)}
 a.puerta:focus-visible{outline:3px solid var(--c);outline-offset:3px}
-a.puerta svg{width:56px;height:56px;color:var(--c)}
-a.puerta h3{font-family:var(--f-head);font-size:2.2rem;line-height:1;text-transform:uppercase;color:var(--c);margin:12px 0 6px}
-a.puerta p{color:var(--ink2)}
-a.puerta ul{color:var(--ink2);padding-left:1.1rem;margin:10px 0 0;flex:1}
-a.puerta li{margin:3px 0}
-a.puerta .ir{margin-top:16px;font-weight:700;color:var(--c);font-size:1.05rem}
+a.puerta svg{width:48px;height:48px;color:var(--c);flex:none}
+a.puerta h2{font-family:var(--f-head);font-size:2rem;line-height:1;text-transform:uppercase;color:var(--c)}
+a.puerta p{color:var(--ink2);margin-top:4px}
+a.puerta .fl{margin-left:auto;font-size:1.8rem;color:var(--c);font-weight:700}
 .p-alu{--c:var(--arc)}.p-pro{--c:var(--violet)}
-.nota{margin-top:28px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;color:var(--ink2);font-size:.95rem}
 footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:24px 20px 32px}
 @media (prefers-reduced-motion:reduce){a.puerta{transition:none}}
 </style>
@@ -49,34 +42,25 @@ footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:24px 20px 32
 <body>
 <header class="top">
   <div class="in">
-    <div class="etq">CFGM Soldadura y Calderería · FP Básica Fabricación de Elementos Metálicos</div>
     <h1>Aula-taller de soldadura</h1>
-    <p class="lema">Del IES ACCI, Guadix, para el mundo</p>
-    <p class="intro">Apuntes visuales para estudiar desde el móvil y pruebas escritas para el profesorado, ordenado por los módulos de la FP.</p>
-    <p class="autor">Autor: <b>Xurxo</b></p>
+    <p class="lema">De Xurxo para el mundo</p>
   </div>
 </header>
 
 <main>
-  <h2>¿Quién eres?</h2>
   <div class="puertas">
-    <a class="puerta p-alu" href="estudiar.html">
+    <a class="puerta p-alu" href="clase.html">
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12c6-3 12-3 18 1 6-4 12-4 18-1v26c-6-3-12-3-18 1-6-4-12-4-18-1z"/><path d="M24 13v26"/></svg>
-      <h3>Estudiante</h3>
-      <p>Elige tu ciclo y tu módulo, y estudia sus contenidos.</p>
-      <ul><li>Apuntes con dibujos que se pueden tocar.</li><li>Un test al final de cada bloque para practicar.</li><li>Funcionan en el móvil, también sin conexión.</li></ul>
-      <span class="ir">Entrar a estudiar →</span>
+      <div><h2>Estudiante</h2><p>Los apuntes de tu clase.</p></div>
+      <span class="fl" aria-hidden="true">›</span>
     </a>
-    <a class="puerta p-pro" href="preparar.html">
+    <a class="puerta p-pro" href="profesor.html">
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="3"/><path d="M17 16h14M17 23h14M17 30h8"/><path d="m28 33 3 3 6-7"/></svg>
-      <h3>Profesor/a</h3>
-      <p>Prepara pruebas escritas a partir de los apuntes.</p>
-      <ul><li>Respuesta múltiple, desarrollo o las dos.</li><li>Dificultad baja, media o alta.</li><li>Cada pregunta, con su RA y CE; solucionario aparte.</li></ul>
-      <span class="ir">Preparar una prueba →</span>
+      <div><h2>Profesorado</h2><p>Planifica tus clases y prepara pruebas.</p></div>
+      <span class="fl" aria-hidden="true">›</span>
     </a>
   </div>
-  <p class="nota">Material en pruebas. Los contenidos siguen los módulos del título de Técnico en Soldadura y Calderería (RD 1692/2007) y de la FP Básica de Fabricación de Elementos Metálicos.</p>
 </main>
-<footer>Material elaborado por <b>Xurxo</b> · IES ACCI, Guadix</footer>
+<footer>CFGM Soldadura y Calderería · FP Básica Fabricación de Elementos Metálicos</footer>
 </body>
 </html>

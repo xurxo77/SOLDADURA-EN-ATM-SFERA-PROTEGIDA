@@ -1,14 +1,19 @@
 # Aula-taller de soldadura
 
-*Del IES ACCI, Guadix, para el mundo.*
+*De Xurxo para el mundo.*
 
-Apuntes visuales y pruebas escritas para el CFGM de Soldadura y Calderería y la FP Básica de Fabricación de Elementos Metálicos (IES ACCI, Guadix), ordenados por módulos y pensados para el móvil.
+Apuntes visuales y pruebas escritas para el CFGM de Soldadura y Calderería y la FP Básica de Fabricación de Elementos Metálicos, ordenados por módulos y pensados para el móvil.
 
 | Archivo | Contenido |
 |---|---|
 | `index.html` | Entrada: modo estudiante o modo profesor |
 | `estudiar.html` | Modo estudiante: ciclo → módulo → temas y bloques, con los RA que trabaja cada bloque |
 | `preparar.html` | Modo profesor: pruebas de respuesta múltiple y/o desarrollo, por dificultad, vinculadas a RA y CE |
+| `profesor.html` | Espacio docente: mis clases (1.º y 2.º), catálogo de unidades, planificación por clase y módulo (ordenar, publicar, ocultar) |
+| `clase.html` | Alumnado: `clase.html?c=1SC` o `?c=2SC`; solo ve las unidades publicadas, en el orden del profesor |
+| `aula-datos.js` | Ciclo, cursos y módulos de cada curso (se edita a mano) |
+| `planificacion.js` | Qué UT tiene cada clase y módulo y si están publicadas (se descarga desde `profesor.html` y se sube) |
+| `aula.css` | Estilo común de `profesor.html` y `clase.html` |
 | `banco.js` | Banco de preguntas y vínculos con módulos, RA y CE (lo genera `tools/banco.js`, no se edita a mano) |
 | `electrodo.html` | Soldadura con electrodo revestido (4 bloques) |
 | `migmag.html` | Soldadura MIG-MAG (4 bloques) |

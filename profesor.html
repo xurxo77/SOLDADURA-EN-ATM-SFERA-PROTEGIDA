@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Espacio docente · Aula-taller de soldadura</title>
+<meta name="theme-color" content="#16314F">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="aula.css">
+<style>
+body{--c:var(--violet)}
+.bloque-plan{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px 16px;margin-top:14px}
+.bloque-plan.cat{background:transparent;border-style:dashed}
+.ut .pos{font-family:var(--f-head);font-size:1.6rem;color:var(--ink2);width:1.6rem;text-align:center;flex:none}
+.ut.oculta{border-left-color:var(--line)}
+.ut.oculta img{filter:grayscale(1);opacity:.6}
+.ut.oculta h3{color:var(--ink2)}
+.estado{display:inline-block;font-size:.8rem;font-weight:700;border-radius:999px;padding:1px 9px;margin-left:4px;vertical-align:2px}
+.estado.si{background:var(--gas-soft);color:var(--gas)}
+.estado.no{background:var(--line);color:var(--ink2)}
+.btn.pub{--c:var(--gas)}
+.mods-ut{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.mods-ut span{font-size:.78rem;border:1.5px solid var(--line);border-radius:6px;padding:0 6px;color:var(--ink2)}
+.mods-ut span.aqui{border-color:var(--violet);color:var(--violet);font-weight:700}
+details.otras{margin-top:12px}
+details.otras summary{cursor:pointer;font-weight:700;color:var(--violet);min-height:2.4rem;display:flex;align-items:center}
+.enlace{background:var(--arc-soft);border-radius:12px;padding:12px 14px;margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.enlace code{font-size:.9rem;word-break:break-all;flex:1;min-width:12rem}
+.enlace .btn{--c:var(--arc)}
+#cambios{position:sticky;bottom:0;z-index:5;background:var(--warn-soft);border-top:3px solid var(--warn);padding:10px max(20px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+#cambios .in{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+#cambios p{flex:1;min-width:14rem;font-size:.95rem}
+#cambios .btn{--c:var(--warn)}
+#cambios details{width:100%;font-size:.92rem;color:var(--ink2)}
+#cambios summary{cursor:pointer;font-weight:700;color:var(--warn)}
+#cambios ol{margin:6px 0 0 1.2rem}
+.resumen{font-size:.92rem;color:var(--ink2)}
+a.tarj .cifra{color:var(--violet);font-weight:700;margin-top:8px;font-size:1rem}
+.atajos{margin-top:22px;display:grid;gap:8px}
+.atajos a{display:flex;align-items:center;gap:4px 12px;flex-wrap:wrap;text-decoration:none;color:inherit;border-bottom:1px solid var(--line);padding:10px 2px;min-height:3rem}
+.atajos b{color:var(--violet)}
+.atajos span{color:var(--ink2);font-size:.92rem;flex:1}
+.atajos i{font-style:normal;color:var(--violet);font-weight:700;font-size:1.3rem}
+@media (max-width:560px){
+  #cambios p .largo{display:none}
+  #cambios .btn{padding:.35rem .7rem;min-height:2.5rem}
+}
+</style>
+<script src="banco.js"></script>
+<script src="aula-datos.js"></script>
+<script src="aula-orden.js"></script>
+<script>document.write('<script src="planificacion.js?v='+Date.now()+'"><\/script>')</script>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a href="index.html">← Volver a la entrada</a>
+  <div class="etq">Profesorado</div>
+  <h1>Espacio docente</h1>
+</div></header>
+
+<main id="vista"></main>
+
+<div id="cambios" hidden><div class="in">
+  <p><b>Tienes cambios sin subir.</b><span class="largo"> El alumnado no los ve hasta que subes la planificación a la web.</span></p>
+  <button type="button" class="btn lleno" id="descargar">Descargar</button>
+  <button type="button" class="btn" id="deshacer">Deshacer</button>
+  <details><summary>Cómo se sube</summary><ol>
+    <li>Pulsa «Descargar planificación». Se guarda el archivo <code>planificacion.js</code>.</li>
+    <li>En GitHub, entra en la carpeta de la web y sube ese archivo (sustituye al que hay).</li>
+    <li>En unos minutos, el alumnado ve lo publicado. Lo que está oculto deja de verse.</li>
+  </ol></details>
+</div></div>
+
+<footer>Material elaborado por <b>Xurxo</b></footer>
+
+<script>
+(function(){
+  var B=window.BANCO,A=window.AULA,ORIG=window.PLAN||{clases:{}};
+  var $=function(s){return document.querySelector(s)};
+  var CLAVE="aula_plan_borrador";
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  var POS={migmag:"50% 40%",corte:"30% 50%",trazado:"50% 20%"};
+  var UT={};B.temas.forEach(function(t){UT[t.id]=t});
+
+  // Clases y módulos
+  var CLASE={},MOD={},CICLO={};
+  A.ciclos.forEach(function(ci){CICLO[ci.id]=ci;ci.cursos.forEach(function(cu){
+    cu.ciclo=ci.corto+" "+ci.nombre;cu.ci=ci;CLASE[cu.id]=cu;
+    cu.modulos.forEach(function(m){MOD[m[0]]=MOD[m[0]]||{cod:m[0],nombre:m[1],color:m[2],cursos:[]};MOD[m[0]].cursos.push(cu.id)});
+  })});
+  Object.keys(B.modulos).forEach(function(c){if(!MOD[c])MOD[c]={cod:c,nombre:B.modulos[c].nombre,color:"#4A5F78",cursos:[],ciclo:B.modulos[c].ciclo}});
+
+  // Planificación: borrador local si lo hay; si no, la publicada.
+  // plan = UT de cada clase y módulo; orden = orden de los módulos de cada clase (lo elige el profesor)
+  function limpia(p){
+    var out={};
+    Object.keys(CLASE).forEach(function(id){
+      out[id]={};
+      CLASE[id].modulos.forEach(function(m){
+        var l=((p[id]||{})[m[0]]||[]).filter(function(x){return UT[x.ut]});
+        out[id][m[0]]=l.map(function(x){return{ut:x.ut,pub:!!x.pub}});
+      });
+    });
+    return out;
+  }
+  function limpiaOrden(o){
+    var out={};
+    Object.keys(CLASE).forEach(function(id){
+      var cods=CLASE[id].modulos.map(function(m){return m[0]});
+      var l=((o||{})[id]||[]).filter(function(c,i,a){return cods.indexOf(c)>=0&&a.indexOf(c)===i});
+      out[id]=l.concat(cods.filter(function(c){return l.indexOf(c)<0}));
+    });
+    return out;
+  }
+  var base={clases:limpia(ORIG.clases||{}),orden:limpiaOrden(ORIG.orden)},plan,orden;
+  try{
+    var g=JSON.parse(localStorage.getItem(CLAVE));
+    if(g){plan=limpia(g.clases||g);orden=limpiaOrden(g.orden)}
+  }catch(e){plan=null}
+  if(!plan){plan=JSON.parse(JSON.stringify(base.clases));orden=JSON.parse(JSON.stringify(base.orden))}
+  function guarda(){
+    var hay=JSON.stringify({clases:plan,orden:orden})!==JSON.stringify(base);
+    try{hay?localStorage.setItem(CLAVE,JSON.stringify({clases:plan,orden:orden})):localStorage.removeItem(CLAVE)}catch(e){}
+    $("#cambios").hidden=!hay;
+  }
+  // Módulos de una clase en el orden elegido
+  function modsDe(id){var cu=CLASE[id],por={};cu.modulos.forEach(function(m){por[m[0]]=m});return orden[id].map(function(c){return por[c]})}
+
+  function contar(id){
+    var n=0,p=0;Object.keys(plan[id]).forEach(function(m){plan[id][m].forEach(function(x){n++;if(x.pub)p++})});return{n:n,p:p};
+  }
+  function img(t){return '<img src="img/'+t.id+'.jpg" alt="" loading="lazy"'+(POS[t.id]?' style="object-position:'+POS[t.id]+'"':'')+'>'}
+  function enlaceAlumnado(id){return new URL("clase.html?c="+id,location.href).href}
+  function migas(arr){return '<nav class="migas" aria-label="Dónde estás">'+arr.map(function(x,i){return i<arr.length-1?'<a href="'+x[1]+'">'+esc(x[0])+'</a><span class="sep">›</span>':'<span>'+esc(x[0])+'</span>'}).join("")+'</nav>'}
+  function titulo(t){$("header h1").textContent=t}
+  function curso(n){document.body.className=n?"curso-"+n:""}
+  // Franja de color que dice siempre en qué clase estás
+  function franja(cu,extra){return '<div class="franja curso-'+cu.n+'"><span class="sello">'+cu.n+'.º</span><div><b>'+esc(cu.nombre)+'</b><span>'+esc(cu.ciclo)+'</span></div>'+(extra||'')+'</div>'}
+  // Botón oficial «Compartir en Classroom»: abre Classroom con el enlace ya puesto (no necesita claves)
+  function classroom(ruta,tit){return "https://classroom.google.com/share?url="+encodeURIComponent(new URL(ruta,location.href).href)+"&title="+encodeURIComponent(tit)}
+  function migaCiclo(ci){return [ci.corto+" "+ci.nombre,"#ci="+ci.id]}
+
+  // ---------- Pantallas ----------
+  // 1. Inicio: los ciclos (aunque ahora solo haya uno con clases)
+  function inicio(){
+    titulo("Espacio docente");
+    // Agrupado por grado (medio, básica…); cada ciclo, una fila; los que no tienen clases, en gris
+    var h='<h2>Tus ciclos</h2>',grados=[];
+    A.ciclos.forEach(function(ci){if(grados.indexOf(ci.grado)<0)grados.push(ci.grado)});
+    grados.forEach(function(g){
+      h+='<section class="grado"><h3 class="grado-tit">'+esc(g)+'</h3>';
+      A.ciclos.filter(function(ci){return ci.grado===g}).forEach(function(ci){
+        if(!ci.cursos.length){h+='<div class="fila-ciclo prox" style="--k:'+ci.color+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>Próximamente</small></span></div>';return}
+        var n=0,q=0;ci.cursos.forEach(function(cu){var k=contar(cu.id);n+=k.n;q+=k.p});
+        h+='<a class="fila-ciclo" style="--k:'+ci.color+'" href="#ci='+ci.id+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>'+ci.cursos.length+' cursos · '+q+' de '+n+' unidades publicadas</small></span><i aria-hidden="true">›</i></a>';
+      });
+      h+='</section>';
+    });
+    h+='<nav class="atajos" aria-label="Más herramientas">'+
+      '<a href="#catalogo"><b>Catálogo de unidades</b><span>Todo lo que hay: '+B.temas.length+' unidades</span><i aria-hidden="true">›</i></a>'+
+      '<a href="preparar.html"><b>Preparar una prueba</b><span>Examen para imprimir, con RA y CE</span><i aria-hidden="true">›</i></a></nav>';
+    return h;
+  }
+
+  // 2. Ciclo: mis clases, una tarjeta grande por curso con su color
+  function ciclo(ci){
+    titulo(ci.corto+" "+ci.nombre);
+    var h=migas([["Inicio","#"],[ci.corto+" "+ci.nombre]])+'<h2>Mis clases</h2><div class="lista">';
+    ci.cursos.forEach(function(cu){
+      var k=contar(cu.id);
+      h+='<a class="tarj curso curso-'+cu.n+'" href="#c='+cu.id+'"><span class="sello">'+cu.n+'.º</span><div><h3>'+esc(cu.nombre)+'</h3><p>'+cu.modulos.length+' módulos</p><p class="cifra">'+k.p+' de '+k.n+' unidades publicadas</p></div></a>';
+    });
+    return h+'</div>';
+  }
+
+  function catalogo(){
+    titulo("Catálogo de unidades");
+    var h=migas([["Inicio","#"],["Catálogo de unidades"]])+'<h2>Catálogo de unidades<small>El inventario completo. Cada unidad de trabajo (UT) es un tema con sus bloques de contenido.</small></h2><div class="lista">';
+    B.temas.forEach(function(t){
+      var en=[];Object.keys(plan).forEach(function(id){Object.keys(plan[id]).forEach(function(m){plan[id][m].forEach(function(x){if(x.ut===t.id)en.push(CLASE[id].nombre+" · "+m+(x.pub?"":" (oculta)"))})})});
+      h+='<div class="ut c-'+t.id+'">'+img(t)+'<div class="tx"><h3>'+esc(t.nombre)+'</h3><p>'+t.bloques.length+' bloques: '+esc(t.bloques.map(function(b){return b.nombre}).join(" · "))+'</p>'+
+        '<div class="mods-ut">'+t.modulos.map(function(c){var m=MOD[c];return '<span class="codm" style="--mc:'+(m?m.color:"#4A5F78")+'" title="'+esc(m?m.nombre:"")+'">'+c+' '+esc(m?m.nombre:"")+'</span>'}).join("")+'</div>'+
+        '<p>'+(en.length?'En tu planificación: '+esc(en.join(" · ")):'Todavía no está en ninguna clase.')+'</p></div>'+
+        '<div class="acc"><a class="btn" href="'+t.web+'" target="_blank" rel="noopener">Ver</a></div></div>';
+    });
+    return h+'</div><p class="nota">Las unidades no se escriben aquí: ya están hechas. Tú eliges cuáles usa cada clase desde «Mis clases».</p>';
+  }
+
+  function clase(id){
+    var cu=CLASE[id];titulo(cu.nombre);curso(cu.n);
+    var h=migas([["Inicio","#"],migaCiclo(cu.ci),[cu.nombre]])+franja(cu)+'<h2>Módulos</h2><p class="pista">Toca uno para planificarlo. Mantén pulsada una tarjeta para cambiarla de sitio.</p><div class="rejilla ordenable" data-orden="mods">';
+    modsDe(id).forEach(function(m){
+      var l=plan[id][m[0]],p=l.filter(function(x){return x.pub}).length;
+      var disp=B.temas.filter(function(t){return t.modulos.indexOf(m[0])>=0}).length;
+      h+='<a class="tarj modulo" data-k="'+m[0]+'" style="--mc:'+m[2]+'" href="#c='+id+'&m='+m[0]+'"><span class="asa" aria-hidden="true" title="Arrastra para mover">⠿</span><span class="codm">'+m[0]+'</span><h3>'+esc(m[1])+'</h3><p>'+
+        (l.length?l.length+(l.length===1?' UT':' UT')+' en tu planificación · '+p+' publicadas':disp?'Sin planificar · '+disp+' UT en el catálogo':'Todavía no hay UT en el catálogo')+'</p></a>';
+    });
+    var u=enlaceAlumnado(id);
+    h+='</div><div class="enlace"><span><b>Enlace para el alumnado</b> de esta clase:</span><code id="url">'+esc(u)+'</code><button type="button" class="btn" id="copiar">Copiar</button><a class="btn" href="'+classroom("clase.html?c="+id,"Apuntes · "+cu.grupo)+'" target="_blank" rel="noopener">Compartir en Classroom</a></div>'+
+      '<p class="nota">Pásalo por Classroom, correo o WhatsApp. No hace falta contraseña: con el enlace ven solo lo que publicas. <a href="clase.html?c='+id+'&previa=1" target="_blank" rel="noopener">Ver la clase como la ve el alumnado</a>.</p>';
+    return h;
+  }
+
+  function modulo(id,c){
+    var cu=CLASE[id],m=MOD[c],l=plan[id][c];titulo(m.nombre);curso(cu.n);
+    var h=migas([["Inicio","#"],migaCiclo(cu.ci),[cu.nombre,"#c="+id],[m.nombre]])+franja(cu)+'<div class="franja-mod" style="--mc:'+m.color+'"><span class="codm">'+c+'</span><b>'+esc(m.nombre)+'</b></div>';
+    // Mi planificación
+    h+='<section class="bloque-plan"><h2>Mi planificación<small>El alumnado ve solo las publicadas, en este orden.</small></h2><p class="pista">Para cambiar el orden, arrastra desde ⠿ o mantén pulsada la tarjeta.</p>';
+    if(!l.length)h+='<p class="vacio">Todavía no has elegido ninguna unidad. Añádelas desde el catálogo de abajo.</p>';
+    else{
+      h+='<div class="lista ordenable" data-orden="uts">';
+      l.forEach(function(x,i){
+        var t=UT[x.ut];
+        h+='<div class="ut c-'+t.id+(x.pub?'':' oculta')+'" data-k="'+t.id+'"><span class="asa" aria-hidden="true" title="Arrastra para mover">⠿</span>'+img(t)+'<div class="tx"><h3>'+esc(t.nombre)+' <span class="estado '+(x.pub?'si">Publicada':'no">Oculta')+'</span></h3><p>'+t.bloques.length+' bloques</p></div><div class="acc">'+
+          '<button type="button" class="btn pub'+(x.pub?'':' lleno')+'" data-acc="pub" data-i="'+i+'">'+(x.pub?'Ocultar':'Publicar')+'</button>'+
+          '<button type="button" class="btn gris" data-acc="quita" data-i="'+i+'">Quitar</button>'+
+          '<a class="btn gris" href="'+t.web+'" target="_blank" rel="noopener">Ver</a>'+
+          (x.pub?'<a class="btn gris cr" href="'+classroom(t.web,t.nombre)+'" target="_blank" rel="noopener" title="Compartir en Google Classroom">Classroom</a>':'')+'</div></div>';
+      });
+      h+='</div>';
+    }
+    h+='</section>';
+    // Catálogo del módulo
+    var dentro={};l.forEach(function(x){dentro[x.ut]=1});
+    var delMod=B.temas.filter(function(t){return !dentro[t.id]&&t.modulos.indexOf(c)>=0});
+    var otras=B.temas.filter(function(t){return !dentro[t.id]&&t.modulos.indexOf(c)<0});
+    function filaCat(t){
+      return '<div class="ut c-'+t.id+'">'+img(t)+'<div class="tx"><h3>'+esc(t.nombre)+'</h3><p>'+t.bloques.length+' bloques</p><div class="mods-ut">'+
+        t.modulos.map(function(k){return '<span class="'+(k===c?'aqui':'')+'">'+k+'</span>'}).join("")+'</div></div><div class="acc">'+
+        '<button type="button" class="btn lleno" data-acc="anade" data-ut="'+t.id+'">Añadir</button><a class="btn gris" href="'+t.web+'" target="_blank" rel="noopener">Ver</a></div></div>';
+    }
+    h+='<section class="bloque-plan cat"><h2>Catálogo de unidades<small>Unidades de trabajo de este módulo que aún no están en tu planificación. Se añaden ocultas.</small></h2>';
+    h+=delMod.length?'<div class="lista">'+delMod.map(filaCat).join("")+'</div>':'<p class="vacio">Ya tienes en tu planificación todas las unidades de este módulo.</p>';
+    if(otras.length)h+='<details class="otras"><summary>Unidades de otros módulos ('+otras.length+')</summary><p class="resumen">Por si una unidad sirve en varios módulos (por ejemplo, seguridad).</p><div class="lista" style="margin-top:8px">'+otras.map(filaCat).join("")+'</div></details>';
+    h+='</section>';
+    return h;
+  }
+
+  // ---------- Ruta ----------
+  function params(){var o={};location.hash.slice(1).split("&").forEach(function(p){var kv=p.split("=");if(kv[0])o[kv[0]]=decodeURIComponent(kv[1]||"")});return o}
+  function pinta(mantener){
+    var p=params(),h,y=window.scrollY;curso(0);
+    if(p.catalogo!==undefined)h=catalogo();
+    else if(p.ci&&CICLO[p.ci]&&CICLO[p.ci].cursos.length)h=ciclo(CICLO[p.ci]);
+    else if(p.c&&CLASE[p.c]&&p.m&&plan[p.c][p.m]!==undefined)h=modulo(p.c,p.m);
+    else if(p.c&&CLASE[p.c])h=clase(p.c);
+    else h=inicio();
+    $("#vista").innerHTML=h;
+    activaOrden(p);
+    document.title=$("header h1").textContent+" · Aula-taller";
+    window.scrollTo(0,mantener?y:0);
+  }
+  function activaOrden(p){
+    var m=document.querySelector('[data-orden="mods"]');
+    if(m)AULA_ORDEN(m,".tarj",function(k){orden[p.c]=k;guarda();pinta(true)});
+    var u=document.querySelector('[data-orden="uts"]');
+    if(u)AULA_ORDEN(u,".ut",function(k){var l=plan[p.c][p.m],por={};l.forEach(function(x){por[x.ut]=x});plan[p.c][p.m]=k.map(function(id){return por[id]});guarda();pinta(true)});
+  }
+  window.addEventListener("hashchange",function(){pinta(false)});
+
+  $("#vista").addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    if(b.id==="copiar"){
+      var u=$("#url").textContent;
+      (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){b.textContent="¡Copiado!"},function(){
+        var r=document.createRange();r.selectNodeContents($("#url"));var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Seleccionado: cópialo";
+      });
+      return;
+    }
+    var p=params(),l=plan[p.c]&&plan[p.c][p.m];if(!l)return;
+    var acc=b.getAttribute("data-acc"),i=+b.getAttribute("data-i");
+    if(acc==="sube"&&i>0)l.splice(i-1,0,l.splice(i,1)[0]);
+    else if(acc==="baja"&&i<l.length-1)l.splice(i+1,0,l.splice(i,1)[0]);
+    else if(acc==="pub")l[i].pub=!l[i].pub;
+    else if(acc==="quita")l.splice(i,1);
+    else if(acc==="anade")l.push({ut:b.getAttribute("data-ut"),pub:false});
+    else return;
+    guarda();pinta(true);
+  });
+
+  $("#descargar").addEventListener("click",function(){
+    var hoy=new Date().toISOString().slice(0,10);
+    var txt="// Planificación del profesor: qué UT tiene cada clase y módulo, en qué orden y si se ven.\n// Se genera desde profesor.html con «Descargar planificación». Después se sube a GitHub.\nwindow.PLAN = "+JSON.stringify({actualizado:hoy,clases:plan,orden:orden},null,2)+";\n";
+    var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/javascript"}));a.download="planificacion.js";
+    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+  });
+  $("#deshacer").addEventListener("click",function(){
+    if(!confirm("¿Volver a la planificación que está subida en la web? Se pierden los cambios de ahora."))return;
+    plan=JSON.parse(JSON.stringify(base.clases));orden=JSON.parse(JSON.stringify(base.orden));guarda();pinta(true);
+  });
+
+  guarda();pinta(false);
+})();
+</script>
+</body>
+</html>

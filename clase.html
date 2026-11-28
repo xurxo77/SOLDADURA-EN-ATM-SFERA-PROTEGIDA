@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi clase · Aula-taller de soldadura</title>
+<meta name="theme-color" content="#16314F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="aula.css">
+<style>
+.ut-cab{background:var(--card);border:1px solid var(--line);border-top:8px solid var(--c);border-radius:14px;overflow:hidden;margin-top:12px}
+.ut-cab img{display:block;width:100%;height:140px;object-fit:cover;background:var(--line)}
+.ut-cab .tx{padding:12px 16px 16px}
+.ut-cab .cod{font-weight:700;color:var(--c);font-size:.9rem}
+.ut-cab h2{margin:2px 0 4px;color:var(--c)}
+.bloques{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
+.bloques a{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit;border:1.5px solid var(--line);border-radius:10px;padding:.7rem .8rem;min-height:3.2rem;background:var(--card)}
+.bloques a:hover{border-color:var(--c)}
+.bloques .n{font-family:var(--f-head);font-size:1.5rem;color:var(--c);width:1.6rem;text-align:center;flex:none}
+.bloques .ir{margin-left:auto;color:var(--c);font-weight:700}
+.completa{display:inline-block;margin-top:14px;font-weight:700;color:var(--c)}
+a.ut{text-decoration:none;color:inherit}
+a.ut:hover{border-color:var(--c)}
+.previa{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:.92rem}
+a.ut .ir{color:var(--c);font-weight:700;font-size:1.4rem}
+</style>
+<script src="banco.js"></script>
+<script src="aula-datos.js"></script>
+<script>document.write('<script src="planificacion.js?v='+Date.now()+'"><\/script>')</script>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a href="index.html">← Volver a la entrada</a>
+  <div class="etq" id="etq">Modo estudiante</div>
+  <h1 id="tit">Mi clase</h1>
+</div></header>
+
+<main id="vista"></main>
+<footer>Material elaborado por <b>Xurxo</b></footer>
+
+<script>
+(function(){
+  var B=window.BANCO,A=window.AULA,P=(window.PLAN||{}).clases||{},ORD=(window.PLAN||{}).orden||{};
+  // Vista previa del profesor: usa sus cambios sin subir de este navegador
+  var PREVIA=new URLSearchParams(location.search).get("previa")==="1";
+  if(PREVIA){try{var bo=JSON.parse(localStorage.getItem("aula_plan_borrador"));if(bo){P=bo.clases||bo;ORD=bo.orden||ORD}}catch(e){}}
+  var $=function(s){return document.querySelector(s)};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  var POS={migmag:"50% 40%",corte:"30% 50%",trazado:"50% 20%"};
+  var UT={};B.temas.forEach(function(t){UT[t.id]=t});
+  var CLASE={},CICLO={};A.ciclos.forEach(function(ci){CICLO[ci.id]=ci;ci.cursos.forEach(function(cu){cu.ciclo=ci.corto+" "+ci.nombre;cu.ci=ci;CLASE[cu.id]=cu})});
+  // Módulos en el orden que eligió el profesor (los que falten, al final)
+  function modsDe(cu){var o=(ORD[cu.id]||[]).slice();return cu.modulos.slice().sort(function(a,b){var i=o.indexOf(a[0]),j=o.indexOf(b[0]);return (i<0?99:i)-(j<0?99:j)})}
+  function franja(cu,extra){return '<div class="franja curso-'+cu.n+'"><span class="sello">'+cu.n+'.º</span><div><b>'+esc(cu.nombre)+'</b><span>'+esc(cu.ciclo)+'</span></div>'+(extra||'')+'</div>'}
+
+  // Solo lo publicado
+  function publicadas(id,m){return ((P[id]||{})[m]||[]).filter(function(x){return x.pub&&UT[x.ut]}).map(function(x){return UT[x.ut]})}
+  function img(t){return '<img src="img/'+t.id+'.jpg" alt="" loading="lazy"'+(POS[t.id]?' style="object-position:'+POS[t.id]+'"':'')+'>'}
+  function migas(arr){return '<nav class="migas" aria-label="Dónde estás">'+arr.map(function(x,i){return i<arr.length-1?'<a href="'+x[1]+'">'+esc(x[0])+'</a><span class="sep">›</span>':'<span>'+esc(x[0])+'</span>'}).join("")+'</nav>'}
+
+  var q=new URLSearchParams(location.search),id=q.get("c");
+  if(!CLASE[id]){try{var g=localStorage.getItem("aula_clase");if(CLASE[g])id=g}catch(e){}}
+  if(CLASE[id]&&!PREVIA){try{localStorage.setItem("aula_clase",id)}catch(e){}}
+
+  // Sin clase: primero el ciclo, después el curso
+  function elegirCiclo(){
+    $("#tit").textContent="Mis clases";
+    var h='<h2>¿Qué estudias?</h2>',grados=[];
+    A.ciclos.forEach(function(ci){if(grados.indexOf(ci.grado)<0)grados.push(ci.grado)});
+    grados.forEach(function(g){
+      h+='<section class="grado"><h3 class="grado-tit">'+esc(g)+'</h3>';
+      A.ciclos.filter(function(ci){return ci.grado===g}).forEach(function(ci){
+        if(!ci.cursos.length){h+='<div class="fila-ciclo prox" style="--k:'+ci.color+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>Próximamente</small></span></div>';return}
+        h+='<a class="fila-ciclo" style="--k:'+ci.color+'" href="#ci='+ci.id+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>'+ci.cursos.length+' cursos</small></span><i aria-hidden="true">›</i></a>';
+      });
+      h+='</section>';
+    });
+    return h+'<p class="nota">Si tu profesor o profesora te pasó un enlace, entra por él: te lleva directo a tu clase.</p>';
+  }
+  function elegirCurso(ci){
+    $("#tit").textContent=ci.corto+" "+ci.nombre;
+    var h='<nav class="migas"><a href="#">Ciclos</a><span class="sep">›</span><span>'+esc(ci.corto+" "+ci.nombre)+'</span></nav><h2>¿En qué curso estás?</h2><div class="lista">';
+    ci.cursos.forEach(function(cu){
+      h+='<a class="tarj curso curso-'+cu.n+'" href="clase.html?c='+cu.id+'"><span class="sello">'+cu.n+'.º</span><div><h3>'+esc(cu.nombre)+'</h3><p>'+esc(cu.grupo)+'</p></div></a>';
+    });
+    return h+'</div><p class="nota">¿Quieres verlo todo, sin separar por clase? <a href="estudiar.html">Todos los temas por módulo</a>.</p>';
+  }
+  function modulos(){
+    var cu=CLASE[id];$("#tit").textContent="Mis módulos";
+    var con=modsDe(cu).filter(function(m){return publicadas(id,m[0]).length});
+    var h=franja(cu)+'<h2>Tus módulos<small>Toca un módulo para ver sus unidades de trabajo.</small></h2>';
+    if(!con.length)return h+'<p class="vacio">Tu profesor o profesora todavía no ha publicado unidades. Vuelve más adelante.</p>'+otraClase();
+    h+='<div class="rejilla">';
+    con.forEach(function(m){var l=publicadas(id,m[0]);
+      h+='<a class="tarj modulo" style="--mc:'+m[2]+'" href="#m='+m[0]+'"><span class="codm">'+m[0]+'</span><h3>'+esc(m[1])+'</h3><p>'+l.length+(l.length===1?' unidad':' unidades')+': '+esc(l.map(function(t){return t.nombre}).join(" · "))+'</p></a>'});
+    return h+'</div>'+otraClase();
+  }
+  function otraClase(){return '<p class="nota">¿No es tu clase? <a href="clase.html?c=" id="cambiar">Cambiar de clase</a>.</p>'}
+  function unidades(m){
+    var cu=CLASE[id],mod=cu.modulos.filter(function(x){return x[0]===m})[0];
+    if(!mod)return modulos();
+    $("#tit").textContent=mod[1];
+    var l=publicadas(id,m);
+    var h=migas([[cu.nombre,"#"],[mod[1]]])+franja(cu)+'<div class="franja-mod" style="--mc:'+mod[2]+'"><span class="codm">'+m+'</span><b>'+esc(mod[1])+'</b></div>'+'<h2>Unidades de trabajo</h2>';
+    if(!l.length)return h+'<p class="vacio">Este módulo no tiene unidades publicadas ahora mismo.</p>';
+    h+='<div class="lista">';
+    l.forEach(function(t,i){
+      h+='<a class="ut c-'+t.id+'" href="#m='+m+'&ut='+t.id+'">'+img(t)+'<div class="tx"><h3>'+esc(t.nombre)+'</h3><p>'+t.bloques.length+' bloques</p></div><span class="ir" aria-hidden="true">›</span></a>';
+    });
+    return h+'</div>';
+  }
+  function unidad(m,u){
+    var cu=CLASE[id],mod=cu.modulos.filter(function(x){return x[0]===m})[0],l=publicadas(id,m),i=l.map(function(t){return t.id}).indexOf(u);
+    if(!mod)return modulos();
+    if(i<0){$("#tit").textContent=mod[1];return migas([[cu.nombre,"#"],[mod[1],"#m="+m]])+'<p class="vacio" style="margin-top:14px">Esta unidad no está disponible ahora. <a href="#m='+m+'">Ver las unidades del módulo</a>.</p>'}
+    var t=l[i];$("#tit").textContent=mod[1];
+    return migas([[cu.nombre,"#"],[mod[1],"#m="+m],[t.nombre]])+
+      '<div class="ut-cab c-'+t.id+'">'+img(t)+'<div class="tx"><span class="cod">Módulo '+m+'</span><h2>'+esc(t.nombre)+'</h2><p>Elige un bloque. Cada uno trae sus dibujos y un test al final.</p>'+
+      '<ol class="bloques">'+t.bloques.map(function(b){return '<li><a href="'+t.web+'#'+b.pag+'"><span class="n">'+b.n+'</span><span>'+esc(b.nombre)+'</span><span class="ir" aria-hidden="true">›</span></a></li>'}).join("")+'</ol>'+
+      '<a class="completa" href="'+t.web+'">Abrir la unidad completa →</a></div></div>'+
+      '<p class="nota">La unidad se abre en un solo archivo con todas sus imágenes: si lo guardas en el móvil, funciona sin conexión.</p>';
+  }
+
+  function ruta(){
+    var o={};location.hash.slice(1).split("&").forEach(function(p){var kv=p.split("=");if(kv[0])o[kv[0]]=decodeURIComponent(kv[1]||"")});
+    document.body.className=CLASE[id]?"curso-"+CLASE[id].n:"";
+    var h=!CLASE[id]?(o.ci&&CICLO[o.ci]&&CICLO[o.ci].cursos.length?elegirCurso(CICLO[o.ci]):elegirCiclo()):o.ut?unidad(o.m,o.ut):o.m?unidades(o.m):modulos();
+    if(PREVIA)h='<p class="previa">Vista previa del profesor: así lo verá el alumnado cuando subas la planificación.</p>'+h;
+    $("#vista").innerHTML=h;
+    document.title=$("#tit").textContent+" · Aula-taller";
+    var c=$("#cambiar");if(c)c.addEventListener("click",function(){try{localStorage.removeItem("aula_clase")}catch(e){}});
+    window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange",ruta);ruta();
+})();
+</script>
+</body>
+</html>

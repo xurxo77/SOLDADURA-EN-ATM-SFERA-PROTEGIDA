@@ -1,0 +1,139 @@
+/* Estilo común de profesor.html y clase.html (mismo aspecto que index.html y estudiar.html) */
+:root{
+  --paper:#F1F3F6;--card:#fff;--ink:#141C28;--ink2:#465364;--line:#D3D9E0;--head:#16314F;--head-ink:#E8EEF5;
+  --arc:#2450E6;--arc-soft:#E3E9FF;--gas:#0B857B;--gas-soft:#DDF3F0;--molten:#C74A08;--steel:#4A5F78;--warn:#9A6A00;--warn-soft:#FFF4D6;
+  --violet:#5B3FB8;--violet-soft:#ECE7FB;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--head:#0B1826;--arc:#8FA8FF;--arc-soft:#1C2647;--gas:#4FD1C5;--gas-soft:#123331;--molten:#FF9159;--steel:#9DB2C8;--warn:#F2C14E;--warn-soft:#3A2F10;--violet:#B7A4FF;--violet-soft:#2A2147;color-scheme:dark}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.45;min-height:100vh;display:flex;flex-direction:column}
+header.top{background:var(--head);color:var(--head-ink);padding:14px max(20px,env(safe-area-inset-right)) 20px max(20px,env(safe-area-inset-left))}
+header.top .in,main,footer{max-width:960px;margin:0 auto;width:100%}
+header.top a{color:var(--head-ink);opacity:.85;font-weight:700;text-decoration:none;font-size:.95rem}
+.etq{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;opacity:.7;margin-top:8px}
+h1{font-family:var(--f-head);font-size:clamp(1.8rem,5vw,2.4rem);line-height:1;margin:2px 0 0;text-transform:uppercase}
+.intro{max-width:40rem;opacity:.9}
+main{padding:16px max(20px,env(safe-area-inset-right)) 32px max(20px,env(safe-area-inset-left));flex:1}
+h2{font-family:var(--f-head);font-size:1.6rem;text-transform:uppercase;letter-spacing:.02em;margin:22px 0 10px;line-height:1.05}
+h2 small{display:block;font-family:var(--f-body);text-transform:none;letter-spacing:0;font-size:.95rem;color:var(--ink2);font-weight:400;margin-top:4px}
+button{font:inherit;cursor:pointer}
+a:focus-visible,button:focus-visible{outline:3px solid var(--c,var(--arc));outline-offset:2px}
+
+/* Migas: dónde estoy */
+.migas{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:.95rem;color:var(--ink2);margin-top:4px}
+.migas a{color:var(--c,var(--arc));font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.migas span.sep{opacity:.6}
+
+/* Tarjetas grandes para elegir (clases, módulos, catálogo) */
+.rejilla{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+a.tarj{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c,var(--arc));border-radius:12px;padding:14px 16px;min-height:5rem}
+a.tarj:hover{border-color:var(--c,var(--arc))}
+a.tarj .cod{font-weight:700;color:var(--c,var(--arc));font-size:.9rem}
+a.tarj h3{font-family:var(--f-head);font-size:1.55rem;line-height:1.05;text-transform:uppercase;margin:2px 0 6px}
+a.tarj p{color:var(--ink2);font-size:.92rem}
+a.tarj.vacia{opacity:.62;border-left-color:var(--line)}
+a.tarj.grande{border-left-width:0;border-top:8px solid var(--c);padding:20px}
+a.tarj.grande h3{font-size:2rem;color:var(--c)}
+
+/* Unidades de trabajo */
+.ut{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:12px;display:flex;gap:12px;align-items:center;padding:10px 12px;min-height:4.4rem}
+.ut img{width:64px;height:64px;border-radius:8px;object-fit:cover;flex:none;background:var(--line)}
+.ut .tx{flex:1;min-width:0}
+.ut h3{font-family:var(--f-head);font-size:1.35rem;line-height:1.05;text-transform:uppercase}
+.ut p{color:var(--ink2);font-size:.88rem}
+.ut .acc{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.lista{display:grid;gap:10px}
+
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--c,var(--arc));background:var(--card);color:var(--c,var(--arc));border-radius:10px;padding:.45rem .8rem;font-weight:700;min-height:2.6rem;white-space:nowrap}
+.btn.lleno{background:var(--c,var(--arc));color:#fff}
+.btn.mini{min-width:2.6rem;padding:.3rem .5rem}
+.btn[disabled]{opacity:.35;cursor:default}
+.btn.gris{--c:var(--steel)}
+
+.c-electrodo{--c:var(--warn)}.c-migmag{--c:var(--arc)}.c-tig{--c:var(--gas)}.c-corte{--c:var(--molten)}.c-montaje,.c-tuberia{--c:var(--steel)}.c-trazado{--c:var(--molten)}
+
+.nota{margin-top:22px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;color:var(--ink2);font-size:.95rem}
+.vacio{color:var(--ink2);background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:16px}
+footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:24px 20px 32px}
+@media (max-width:560px){
+  .ut{flex-wrap:wrap}.ut img{width:52px;height:52px}
+  .ut .acc{width:100%;justify-content:flex-start;flex-wrap:wrap;gap:5px}
+  .ut .acc .btn{padding:.3rem .55rem;font-size:.92rem;min-height:2.5rem}
+  .ut .acc .btn.mini{min-width:2.4rem}
+}
+
+/* ---------- Jerarquía: ciclo → curso → módulo ---------- */
+/* Cada curso tiene su color (--cc) y su sello grande; se ve en tarjetas, franja y cabecera */
+.curso-1{--cc:var(--gas);--cc-soft:var(--gas-soft)}
+.curso-2{--cc:var(--molten);--cc-soft:#FBE7DA}
+@media (prefers-color-scheme:dark){.curso-2{--cc-soft:#3A2214}}
+body.curso-1 header.top,body.curso-2 header.top{border-bottom:6px solid var(--cc)}
+.sello{display:inline-grid;place-items:center;flex:none;width:3.4rem;height:3.4rem;border-radius:12px;background:var(--cc);color:#fff;font-family:var(--f-head);font-size:1.9rem;line-height:1}
+@media (prefers-color-scheme:dark){.sello{color:#0E141B}}
+a.tarj.curso{flex-direction:row;align-items:center;gap:14px;border-left:0;border-top:0;border:2px solid var(--cc);background:linear-gradient(90deg,var(--cc-soft),var(--card) 70%);padding:18px}
+a.tarj.curso h3{color:var(--cc);font-size:2rem;margin:0}
+a.tarj.curso .cifra{color:var(--ink);font-weight:700;margin-top:4px}
+.franja{display:flex;align-items:center;gap:12px;background:var(--cc-soft);border-left:6px solid var(--cc);border-radius:10px;padding:10px 12px;margin-top:10px}
+.franja .sello{width:2.6rem;height:2.6rem;font-size:1.45rem;border-radius:9px}
+.franja b{display:block;font-family:var(--f-head);font-size:1.35rem;text-transform:uppercase;line-height:1;color:var(--cc)}
+.franja span{font-size:.9rem;color:var(--ink2)}
+.franja span.sello{color:#fff;font-size:1.45rem}
+.franja .mod{margin-left:auto;text-align:right}
+/* Ciclos */
+a.tarj.ciclo{border-left:0;border-top:8px solid var(--c);padding:20px}
+a.tarj.ciclo .grado{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--c)}
+a.tarj.ciclo h3{font-size:2rem;color:var(--ink)}
+a.tarj.ciclo .chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+a.tarj.ciclo .chips span{font-weight:700;font-size:.85rem;border-radius:999px;padding:2px 10px;background:var(--cc);color:#fff}
+.tarj.prox{display:flex;flex-direction:column;background:transparent;border:2px dashed var(--line);border-radius:12px;padding:20px;color:var(--ink2)}
+.tarj.prox .grado{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.tarj.prox h3{font-family:var(--f-head);font-size:1.6rem;text-transform:uppercase;line-height:1.05;margin:2px 0 6px}
+@media (prefers-color-scheme:dark){.franja span.sello{color:#0E141B}}
+
+/* ---------- Color de cada módulo (--mc, sale de aula-datos.js) ---------- */
+a.tarj.modulo{border-left:8px solid var(--mc)}
+a.tarj.modulo:hover{border-color:var(--mc)}
+.codm{display:inline-block;align-self:flex-start;background:var(--mc);color:#fff;font-weight:700;font-size:.85rem;border-radius:6px;padding:1px 8px;letter-spacing:.02em}
+.franja .codm{margin-left:auto}
+.franja-mod{display:flex;align-items:center;gap:10px;margin-top:8px;border-left:6px solid var(--mc);padding:6px 10px;background:var(--card);border-radius:8px}
+.franja-mod b{font-family:var(--f-head);font-size:1.3rem;text-transform:uppercase;line-height:1.05}
+
+/* ---------- Reordenar con el dedo (aula-orden.js) ---------- */
+.ordenable>*{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.ordenando{cursor:grabbing}
+.arrastrando{position:relative;z-index:20;box-shadow:0 10px 28px rgba(0,0,0,.25);transform-origin:center;opacity:.96;cursor:grabbing}
+.asa{flex:none;display:inline-grid;place-items:center;width:2rem;min-height:2.6rem;color:var(--ink2);font-size:1.3rem;cursor:grab;touch-action:none;border-radius:6px}
+.asa:hover{background:var(--paper)}
+.pista{font-size:.88rem;color:var(--ink2);margin:-4px 0 10px}
+a.tarj{position:relative}
+a.tarj .asa{position:absolute;top:4px;right:4px}
+.ut .asa{margin-left:-6px}
+
+/* ---------- Elegir ciclo: agrupado por grado, filas tranquilas ---------- */
+.grado{margin-top:14px}
+.grado-tit{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--ink2);margin:0 0 6px;display:flex;align-items:center;gap:10px}
+.grado-tit::after{content:"";flex:1;height:1px;background:var(--line)}
+.fila-ciclo{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:4rem}
+a.fila-ciclo:hover{border-color:var(--c,var(--arc))}
+.fila-ciclo .sigla{flex:none;font-weight:700;font-size:.8rem;color:var(--ink2);border:1.5px solid var(--line);border-radius:6px;padding:1px 7px}
+.fila-ciclo .tx{flex:1;min-width:0}
+.fila-ciclo b{display:block;font-family:var(--f-head);font-size:1.45rem;line-height:1.05;text-transform:uppercase}
+.fila-ciclo small{display:block;color:var(--ink2);font-size:.88rem;margin-top:2px}
+.fila-ciclo i{font-style:normal;font-size:1.6rem;font-weight:700;color:var(--c,var(--arc))}
+.fila-ciclo.prox{background:transparent;border-style:dashed;min-height:3.2rem;padding:8px 14px}
+.fila-ciclo.prox b{font-size:1.1rem;color:var(--ink2)}
+/* Color de cada ciclo (--k): la fila activa lo luce; «Próximamente» solo lo insinúa */
+a.fila-ciclo{border:1.5px solid color-mix(in srgb,var(--k) 35%,var(--line));border-left:7px solid var(--k);background:linear-gradient(90deg,color-mix(in srgb,var(--k) 12%,var(--card)),var(--card) 80%)}
+a.fila-ciclo:hover{border-color:var(--k)}
+a.fila-ciclo .sigla{background:var(--k);border-color:var(--k);color:#fff}
+a.fila-ciclo b{color:var(--k)}
+a.fila-ciclo i{color:var(--k)}
+.fila-ciclo.prox{border-left:4px dashed color-mix(in srgb,var(--k) 45%,var(--line))}
+.fila-ciclo.prox .sigla{color:color-mix(in srgb,var(--k) 70%,var(--ink2));border-color:color-mix(in srgb,var(--k) 40%,var(--line))}
+@media (prefers-color-scheme:dark){
+  a.fila-ciclo{--k2:color-mix(in srgb,var(--k) 55%,#fff)}
+  a.fila-ciclo b,a.fila-ciclo i{color:var(--k2)}
+  a.fila-ciclo{background:linear-gradient(90deg,color-mix(in srgb,var(--k) 22%,var(--card)),var(--card) 80%)}
+}
