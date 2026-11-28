@@ -2,7 +2,7 @@
 // Pide la clave antes de enseñar la página y la recuerda en este navegador.
 // La clave no está aquí escrita: solo su huella cifrada (SHA-256). Para cambiarla: node tools/clave.js
 // Si ACCESO_HUELLA está vacía, no se pide clave.
-window.ACCESO_HUELLA = "";
+window.ACCESO_HUELLA = "4ee2862a8fc7f241fb208dc801115dd770542cac2fc754ca90d04aaa5ab7c578";
 
 (function(){
   var H=window.ACCESO_HUELLA,CLAVE="aula_acceso",SAL="aula-taller|";
