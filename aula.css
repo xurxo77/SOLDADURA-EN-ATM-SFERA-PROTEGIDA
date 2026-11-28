@@ -9,7 +9,7 @@
 @media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--head:#0B1826;--arc:#8FA8FF;--arc-soft:#1C2647;--gas:#4FD1C5;--gas-soft:#123331;--molten:#FF9159;--steel:#9DB2C8;--warn:#F2C14E;--warn-soft:#3A2F10;--violet:#B7A4FF;--violet-soft:#2A2147;color-scheme:dark}}
 *{box-sizing:border-box;margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.45;min-height:100vh;display:flex;flex-direction:column}
-header.top{background:var(--head);color:var(--head-ink);padding:14px max(20px,env(safe-area-inset-right)) 20px max(20px,env(safe-area-inset-left))}
+header.top{background:var(--head);color:var(--head-ink);padding:max(14px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) 20px max(20px,env(safe-area-inset-left))}
 header.top .in,main,footer{max-width:960px;margin:0 auto;width:100%}
 header.top a{color:var(--head-ink);opacity:.85;font-weight:700;text-decoration:none;font-size:.95rem}
 .etq{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#AFC0D3;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}

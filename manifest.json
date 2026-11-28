@@ -1,0 +1,20 @@
+{
+  "id": "./?app=aula-taller",
+  "name": "Aula-taller de soldadura",
+  "short_name": "Aula-taller",
+  "description": "Unidades de trabajo de soldadura para FP, listas para llevar a Google Classroom, y pruebas con RA y CE. De Xurxo para el mundo.",
+  "start_url": "./profesor.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#16314F",
+  "theme_color": "#16314F",
+  "lang": "es-ES",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

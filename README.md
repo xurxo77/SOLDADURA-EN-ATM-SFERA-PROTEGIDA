@@ -15,6 +15,8 @@ Apuntes visuales y pruebas escritas para el CFGM de Soldadura y Calderería y la
 | `classroom.js` | Conexión con la API de Google Classroom («Montar en Classroom»: crea el tema del módulo y un material por unidad, en borrador) |
 | `classroom-config.js` | ID de cliente de Google (se rellena una vez; guía en `GUIA_API_CLASSROOM.md` del proyecto) |
 | `acceso.js` | Clave de acceso del espacio docente y de preparar pruebas (solo la huella cifrada; se cambia con `node tools/clave.js`). Es una cortina, no una cerradura: los archivos siguen siendo públicos |
+| `manifest.json`, `sw.js` | App instalable (PWA) «Aula-taller»: manifiesto y service worker (red primero, copia para sin conexión) |
+| `icon-*.png`, `apple-touch-icon.png`, `favicon.png` | Icono de la app: el soldador de Nexus en azul con «AULA-TALLER» (lo hace `tools/icono_app.js`) |
 | `aula.css` | Estilo común de `profesor.html` y `clase.html` |
 | `banco.js` | Banco de preguntas y vínculos con módulos, RA y CE (lo genera `tools/banco.js`, no se edita a mano) |
 | `electrodo.html` | Soldadura con electrodo revestido (4 bloques) |

@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aula-taller de soldadura · Xurxo</title>
 <meta name="theme-color" content="#16314F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Aula-taller">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script src="acceso.js"></script>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -280,5 +287,6 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
   pinta();
 })();
 </script>
+<script>if("serviceWorker" in navigator&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js").catch(function(){})</script>
 </body>
 </html>
