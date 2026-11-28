@@ -31,7 +31,6 @@ a.ut .ir{color:var(--c);font-weight:700;font-size:1.4rem}
 </head>
 <body>
 <header class="top"><div class="in">
-  <a class="volver-top" href="index.html">← Volver a la entrada</a>
   <div class="etq">Estudiante</div>
   <h1 id="tit">Mi clase</h1>
 </div></header>
@@ -40,7 +39,6 @@ a.ut .ir{color:var(--c);font-weight:700;font-size:1.4rem}
 <nav class="barra" aria-label="Navegación">
   <a class="atras" id="bAtras" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Atrás</a>
   <a id="bInicio" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Inicio</a>
-  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg>Salir</a>
 </nav>
 <footer>Material elaborado por <b>Xurxo</b></footer>
 
@@ -51,7 +49,7 @@ a.ut .ir{color:var(--c);font-weight:700;font-size:1.4rem}
   var B=window.BANCO,A=window.AULA;
   var $=function(s){return document.querySelector(s)};
   // Barra de abajo (móvil): Atrás sube un nivel; Inicio va al principio de este espacio
-  function barra(atras,inicio){var a=document.getElementById("bAtras"),i=document.getElementById("bInicio");a.href=atras||"#";a.classList.toggle("off",!atras);i.href=inicio||"#";i.classList.toggle("off",!inicio)}
+  function barra(atras,inicio){var a=document.getElementById("bAtras"),i=document.getElementById("bInicio");a.href=atras||"#";a.classList.toggle("off",!atras);i.href=inicio||"#";i.classList.toggle("off",!inicio);a.parentNode.hidden=!atras&&!inicio;document.body.classList.toggle("sin-barra",!atras&&!inicio)}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   var POS={migmag:"50% 40%",corte:"30% 50%",trazado:"50% 20%"};
   var CLASE={};A.ciclos.forEach(function(ci){ci.cursos.forEach(function(cu){cu.ciclo=ci.corto+" "+ci.nombre;cu.ci=ci;CLASE[cu.id]=cu})});

@@ -4,63 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aula-taller de soldadura · Xurxo</title>
-<meta name="description" content="Aula-taller de soldadura para FP: apuntes visuales por módulo para el alumnado y planificación y pruebas para el profesorado.">
+<meta name="description" content="Aula-taller de soldadura para FP: unidades de trabajo visuales para llevar a Google Classroom y pruebas con RA y CE.">
 <meta name="theme-color" content="#16314F">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
-<style>
-/* Entrada del aula-taller: dos puertas, estudiante y profesor */
-:root{
-  --paper:#F1F3F6;--card:#fff;--ink:#141C28;--ink2:#465364;--line:#D3D9E0;--head:#16314F;--head-ink:#E8EEF5;
-  --arc:#2450E6;--violet:#5B3FB8;
-  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
-}
-@media (prefers-color-scheme:dark){:root{--paper:#0E141B;--card:#161E29;--ink:#E8EEF5;--ink2:#A2AFBE;--line:#2A3543;--head:#0B1826;--arc:#8FA8FF;--violet:#B7A4FF;color-scheme:dark}}
-*{box-sizing:border-box;margin:0}
-body{background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.45;min-height:100vh;display:flex;flex-direction:column}
-header.top{background:var(--head);color:var(--head-ink);padding:22px max(20px,env(safe-area-inset-right)) 20px max(20px,env(safe-area-inset-left))}
-header.top .in,main,footer{max-width:720px;margin:0 auto;width:100%}
-h1{font-family:var(--f-head);font-size:clamp(2rem,6vw,2.8rem);line-height:1;text-transform:uppercase;letter-spacing:.01em}
-.lema{font-size:.95rem;opacity:.8;margin-top:6px}
-main{padding:28px max(20px,env(safe-area-inset-right)) 24px max(20px,env(safe-area-inset-left));flex:1}
-.puertas{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-a.puerta{display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:14px;padding:22px 20px;transition:transform .12s,border-color .12s}
-a.puerta:hover{border-color:var(--c)}
-a.puerta:active{transform:scale(.985)}
-a.puerta:focus-visible{outline:3px solid var(--c);outline-offset:3px}
-a.puerta svg{width:48px;height:48px;color:var(--c);flex:none}
-a.puerta h2{font-family:var(--f-head);font-size:2rem;line-height:1;text-transform:uppercase;color:var(--c)}
-a.puerta p{color:var(--ink2);margin-top:4px}
-a.puerta .fl{margin-left:auto;font-size:1.8rem;color:var(--c);font-weight:700}
-.p-alu{--c:var(--arc)}.p-pro{--c:var(--violet)}
-footer{text-align:center;color:var(--ink2);font-size:.85rem;padding:24px 20px 32px}
-@media (prefers-reduced-motion:reduce){a.puerta{transition:none}}
-</style>
+<!-- La entrada es el espacio docente: el alumnado llega a los apuntes desde Classroom -->
+<meta http-equiv="refresh" content="0; url=profesor.html">
+<script>location.replace("profesor.html"+location.hash)</script>
+<style>body{font-family:system-ui,sans-serif;background:#F1F3F6;color:#141C28;display:grid;place-items:center;min-height:100vh;margin:0}a{color:#5B3FB8;font-weight:700}</style>
 </head>
 <body>
-<header class="top">
-  <div class="in">
-    <h1>Aula-taller de soldadura</h1>
-    <p class="lema">De Xurxo para el mundo</p>
-  </div>
-</header>
-
-<main>
-  <div class="puertas">
-    <a class="puerta p-alu" href="clase.html">
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12c6-3 12-3 18 1 6-4 12-4 18-1v26c-6-3-12-3-18 1-6-4-12-4-18-1z"/><path d="M24 13v26"/></svg>
-      <div><h2>Estudiante</h2><p>Los apuntes de tu clase.</p></div>
-      <span class="fl" aria-hidden="true">›</span>
-    </a>
-    <a class="puerta p-pro" href="profesor.html">
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="3"/><path d="M17 16h14M17 23h14M17 30h8"/><path d="m28 33 3 3 6-7"/></svg>
-      <div><h2>Profesorado</h2><p>Planifica tus clases y prepara pruebas.</p></div>
-      <span class="fl" aria-hidden="true">›</span>
-    </a>
-  </div>
-</main>
-<footer>CFGM Soldadura y Calderería · FP Básica Fabricación de Elementos Metálicos</footer>
+<p><a href="profesor.html">Entrar en el Aula-taller de soldadura</a></p>
 </body>
 </html>

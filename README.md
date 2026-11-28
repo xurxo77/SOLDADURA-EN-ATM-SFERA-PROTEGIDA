@@ -6,14 +6,15 @@ Apuntes visuales y pruebas escritas para el CFGM de Soldadura y Calderería y la
 
 | Archivo | Contenido |
 |---|---|
-| `index.html` | Entrada: modo estudiante o modo profesor |
+| `index.html` | Entrada: lleva directo al espacio docente (`profesor.html`) |
 | `estudiar.html` | Modo estudiante: ciclo → módulo → temas y bloques, con los RA que trabaja cada bloque |
 | `preparar.html` | Modo profesor: pruebas de respuesta múltiple y/o desarrollo, por dificultad, vinculadas a RA y CE |
 | `profesor.html` | Espacio docente: ciclo → curso → módulo → unidades, cada una con «Compartir en Classroom» (la planificación se hace en Classroom); catálogo de unidades |
-| `clase.html` | Estudiante: ciclo → curso → módulo → unidades → bloques. Enlace directo a una clase: `clase.html?c=1SC` o `?c=2SC` |
+| `clase.html` | Apuntes de una clase para el alumnado, sin puerta en la portada: se llega con el enlace que el profesor fija en Classroom (`clase.html?c=1SC`) |
 | `aula-datos.js` | Ciclo, cursos y módulos de cada curso (se edita a mano) |
 | `classroom.js` | Conexión con la API de Google Classroom («Montar en Classroom»: crea el tema del módulo y un material por unidad, en borrador) |
 | `classroom-config.js` | ID de cliente de Google (se rellena una vez; guía en `GUIA_API_CLASSROOM.md` del proyecto) |
+| `acceso.js` | Clave de acceso del espacio docente y de preparar pruebas (solo la huella cifrada; se cambia con `node tools/clave.js`). Es una cortina, no una cerradura: los archivos siguen siendo públicos |
 | `aula.css` | Estilo común de `profesor.html` y `clase.html` |
 | `banco.js` | Banco de preguntas y vínculos con módulos, RA y CE (lo genera `tools/banco.js`, no se edita a mano) |
 | `electrodo.html` | Soldadura con electrodo revestido (4 bloques) |

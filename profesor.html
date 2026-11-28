@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Espacio docente · Aula-taller de soldadura</title>
+<title>Aula-taller de soldadura · Xurxo</title>
 <meta name="theme-color" content="#16314F">
+<script src="acceso.js"></script>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,9 +49,8 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
 </head>
 <body>
 <header class="top"><div class="in">
-  <a class="volver-top" href="index.html">← Volver a la entrada</a>
-  <div class="etq">Profesorado</div>
-  <h1>Espacio docente</h1>
+  <div class="etq">Espacio docente</div>
+  <h1>Aula-taller de soldadura</h1>
 </div></header>
 
 <main id="vista"></main>
@@ -59,9 +59,9 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
 <nav class="barra" aria-label="Navegación">
   <a class="atras" id="bAtras" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Atrás</a>
   <a id="bInicio" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Inicio</a>
-  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg>Salir</a>
 </nav>
-<footer>Material elaborado por <b>Xurxo</b></footer>
+<footer>Material elaborado por <b>Xurxo</b><span id="salirClave" hidden> · <a href="#" onclick="ACCESO_SALIR();return false">Cerrar el acceso en este navegador</a></span></footer>
+<script>if(window.ACCESO_HUELLA)document.getElementById("salirClave").hidden=false</script>
 
 <script>
 (function(){
@@ -70,7 +70,7 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
   var B=window.BANCO,A=window.AULA;
   var $=function(s){return document.querySelector(s)};
   // Barra de abajo (móvil): Atrás sube un nivel; Inicio va al principio de este espacio
-  function barra(atras,inicio){var a=document.getElementById("bAtras"),i=document.getElementById("bInicio");a.href=atras||"#";a.classList.toggle("off",!atras);i.href=inicio||"#";i.classList.toggle("off",!inicio)}
+  function barra(atras,inicio){var a=document.getElementById("bAtras"),i=document.getElementById("bInicio");a.href=atras||"#";a.classList.toggle("off",!atras);i.href=inicio||"#";i.classList.toggle("off",!inicio);a.parentNode.hidden=!atras&&!inicio;document.body.classList.toggle("sin-barra",!atras&&!inicio)}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   var POS={migmag:"50% 40%",corte:"30% 50%",trazado:"50% 20%"};
 
@@ -90,7 +90,7 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
   function migas(arr){return '<nav class="migas" aria-label="Dónde estás">'+arr.map(function(x,i){return i<arr.length-1?'<a href="'+x[1]+'">'+esc(x[0])+'</a><span class="sep">›</span>':'<span>'+esc(x[0])+'</span>'}).join("")+'</nav>'}
   function titulo(t){$("header h1").textContent=t}
   // Línea pequeña encima del título: dice lo que el título no dice (ciclo, código del módulo)
-  function etq(html){$("header .etq").innerHTML=html||"Profesorado"}
+  function etq(html){$("header .etq").innerHTML=html||"Espacio docente · De Xurxo para el mundo"}
   function curso(n){document.body.className=n?"curso-"+n:""}
   function franja(cu){return '<div class="franja curso-'+cu.n+'"><span class="sello">'+cu.n+'.º</span><div><b>'+esc(cu.nombre)+'</b><span>'+esc(cu.ciclo)+'</span></div></div>'}
   function migaCiclo(ci){return [ci.corto+" "+ci.nombre,"#ci="+ci.id]}
@@ -99,7 +99,7 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
   // ---------- Pantallas ----------
   // 1. Inicio: los ciclos, uno por fila. La sigla (CFGM, CFGS, FPB) ya dice el grado.
   function inicio(){
-    titulo("Espacio docente");
+    titulo("Aula-taller de soldadura");
     var activos=A.ciclos.filter(function(ci){return ci.cursos.length}),prox=A.ciclos.filter(function(ci){return !ci.cursos.length});
     var h='<div class="ciclos">';
     activos.forEach(function(ci){
@@ -184,7 +184,7 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
     else if(p.c&&CLASE[p.c]){h=clase(p.c);barra("#ci="+CLASE[p.c].ci.id,"#top")}
     else{h=inicio();barra(null,null)}
     $("#vista").innerHTML=h;
-    document.title=$("header h1").textContent+" · Aula-taller";
+    var t1=$("header h1").textContent;document.title=t1==="Aula-taller de soldadura"?t1+" · Xurxo":t1+" · Aula-taller";
     window.scrollTo(0,0);
   }
   // ---------- Montar un módulo en Classroom (API) ----------
