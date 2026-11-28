@@ -83,12 +83,14 @@
     temas:function(curso){return todo("courses/"+curso+"/topics","topic")},
     crearTema:function(curso,nombre){return api("POST","courses/"+curso+"/topics",{name:nombre})},
     materiales:function(curso){return todo("courses/"+curso+"/courseWorkMaterials?courseWorkMaterialStates=PUBLISHED&courseWorkMaterialStates=DRAFT","courseWorkMaterial")},
-    // Material en borrador dentro de un tema, con sus enlaces
-    crearMaterial:function(curso,tema,titulo,descripcion,enlaces){
-      return api("POST","courses/"+curso+"/courseWorkMaterials",{
-        title:titulo,description:descripcion,topicId:tema,state:"DRAFT",
-        materials:enlaces.slice(0,20).map(function(u){return{link:{url:u}}})
-      });
+    // Material dentro de un tema, con sus enlaces.
+    // como: {estado:"DRAFT"|"PUBLISHED", programado:"2026-12-01T08:00:00.000Z"} (programado: borrador que se publica solo)
+    crearMaterial:function(curso,tema,titulo,descripcion,enlaces,como){
+      como=como||{};
+      var cuerpo={title:titulo,description:descripcion,topicId:tema,state:como.programado?"DRAFT":(como.estado||"DRAFT"),
+        materials:enlaces.slice(0,20).map(function(u){return{link:{url:u}}})};
+      if(como.programado)cuerpo.scheduledTime=como.programado;
+      return api("POST","courses/"+curso+"/courseWorkMaterials",cuerpo);
     }
   };
 })();

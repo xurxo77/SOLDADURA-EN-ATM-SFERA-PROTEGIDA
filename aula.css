@@ -170,7 +170,7 @@ dialog#crDlg::backdrop{background:rgba(10,20,30,.55)}
 .cr-lab{display:block;font-weight:700;margin:12px 0 4px}
 .cr-uts{display:grid;gap:2px}
 .cr-uts .chk{display:flex;gap:8px;align-items:center;min-height:2.4rem}
-.cr-uts input{width:1.2rem;height:1.2rem;accent-color:var(--cr)}
+.cr-uts input[type=checkbox]{width:1.2rem;height:1.2rem;accent-color:var(--cr)}
 .cr-uts small{color:var(--ink2)}
 .cr-log{list-style:none;padding:0;margin:4px 0;display:grid;gap:4px;font-size:.95rem}
 .cr-error{background:#FDECEC;color:#8A1C1C;border-left:4px solid #C62828;border-radius:8px;padding:8px 12px}
@@ -178,3 +178,14 @@ dialog#crDlg::backdrop{background:rgba(10,20,30,.55)}
 @media (prefers-color-scheme:dark){.cr-error{background:#3A1515;color:#FFB4B4}}
 @media (max-width:560px){dialog#crDlg{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0}}
 @media (max-width:760px){.barra[hidden]{display:none}body.sin-barra{padding-bottom:0}}
+/* Montar en Classroom: campos editables */
+.cr-txt{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:.5rem .6rem;width:100%;min-height:2.6rem}
+textarea.cr-txt{resize:vertical;line-height:1.35;font-size:.92rem}
+.cr-ayuda{font-size:.85rem;color:var(--ink2);margin:4px 0 0!important}
+.cr-ut{border:1px solid var(--line);border-radius:10px;padding:4px 10px 6px;margin-bottom:6px}
+.cr-ut details summary{cursor:pointer;color:var(--cr);font-size:.88rem;font-weight:700;min-height:2rem;display:flex;align-items:center}
+.cr-mini{display:block;font-size:.82rem;font-weight:700;color:var(--ink2);margin:6px 0 2px}
+.cr-estado .chk{display:flex;gap:8px;align-items:center;min-height:2.4rem}
+.cr-estado input[type=radio]{width:1.15rem;height:1.15rem;accent-color:var(--cr)}
+.cr-estado small{color:var(--ink2)}
+.cr-prog{display:flex;gap:8px;margin:4px 0 0 1.8rem}

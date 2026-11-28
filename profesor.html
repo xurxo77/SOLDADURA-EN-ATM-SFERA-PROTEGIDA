@@ -195,18 +195,27 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
     window.scrollTo(0,0);
   }
   // ---------- Montar un módulo en Classroom (API) ----------
-  // Crea (o reutiliza) el tema del módulo y un material en borrador por unidad, con el enlace de la unidad
-  // y de cada bloque. Se crean del último al primero para que en Classroom salgan en orden (lo nuevo va arriba).
+  // Antes de crear nada se puede elegir: la clase, el nombre del tema (nuevo o uno que ya exista),
+  // qué unidades van, el título y la descripción de cada una, y si se quedan en borrador, se publican ya
+  // o se programan para un día y hora. Se crean del último al primero para que en Classroom salgan en orden.
   var M=null;
   var dlg=$("#crDlg"),cuerpo=$("#crCuerpo");
-  function abreMontar(id,c){M={id:id,c:c,clases:null,curso:null,uts:{},paso:"",log:[],error:"",hecho:false};utsDe(c).forEach(function(t){M.uts[t.id]=true});dlg.showModal();pintaM()}
+  function descDe(t){return "Apuntes de la unidad de trabajo «"+t.nombre+"», con dibujos y un test al final de cada bloque.\n\nBloques:\n"+t.bloques.map(function(b){return b.n+". "+b.nombre}).join("\n")}
+  function abreMontar(id,c){
+    M={id:id,c:c,clases:null,curso:null,temas:null,tema:c+" "+MOD[c].nombre,uts:{},estado:"DRAFT",fecha:"",hora:"08:00",paso:"",log:[],error:"",hecho:false};
+    utsDe(c).forEach(function(t){M.uts[t.id]={on:true,tit:"UT · "+t.nombre,desc:descDe(t)}});
+    dlg.showModal();pintaM();
+  }
   function nomClase(k){return k.name+(k.section?" · "+k.section:"")}
   function lista(){return '<ul class="cr-log">'+M.log.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul>'}
+  function cargaTemas(){
+    M.temas=null;
+    CR.temas(M.curso).then(function(ts){M.temas=ts;pintaM()},function(){M.temas=[];pintaM()});
+  }
   function pintaM(){
-    var m=MOD[M.c],h="";
+    var h="";
     if(!CR.configurado()){
-      h='<p>Para crear temas y materiales en tu Classroom desde aquí, hay que conectar la web con Google <b>una sola vez</b>: crear un proyecto gratuito en Google Cloud y pegar su «ID de cliente» en <code>classroom-config.js</code>.</p>'+
-        '<p class="resumen">Los pasos están en la guía <b>GUIA_API_CLASSROOM.md</b>. Mientras tanto, usa «Compartir en Classroom» en cada unidad.</p>';
+      h='<p>Para crear temas y materiales en tu Classroom desde aquí, hay que conectar la web con Google <b>una sola vez</b>. Los pasos están en la guía <b>GUIA_API_CLASSROOM.md</b>.</p>';
     }else if(M.error){
       h=(M.log.length?lista():'')+'<p class="cr-error">'+esc(M.error)+'</p><button type="button" class="btn cr lleno" data-m="reintentar">Volver a probar</button>';
     }else if(!CR.conectado()){
@@ -216,11 +225,14 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
       h='<p class="resumen">Buscando tus clases de Classroom…</p>';
       CR.clases().then(function(l){
         M.clases=l;var g=null;try{g=localStorage.getItem("cr_clase_"+M.id)}catch(e){}
-        M.curso=(l.filter(function(k){return k.id===g})[0]||l[0]||{}).id||null;pintaM();
+        M.curso=(l.filter(function(k){return k.id===g})[0]||l[0]||{}).id||null;
+        if(M.curso)cargaTemas();
+        pintaM();
       },function(e){M.error=e.message;pintaM()});
     }else if(M.hecho){
       var k=M.clases.filter(function(x){return x.id===M.curso})[0];
-      h=lista()+'<p><b>Listo.</b> Todo queda en <b>borrador</b>: entra en Classroom, revisa el tema y publica lo que toque.</p>'+
+      var como=M.estado==="PUBLISHED"?"<b>publicado</b>: el alumnado ya lo ve":M.estado==="PROG"?"<b>programado</b>: se publicará solo el "+esc(fechaBonita()):"en <b>borrador</b>: revisa en Classroom y publica lo que toque";
+      h=lista()+'<p><b>Listo.</b> Todo queda '+como+'.</p>'+
         (k&&k.alternateLink?'<a class="btn cr lleno" href="'+esc(k.alternateLink)+'" target="_blank" rel="noopener">Abrir la clase en Classroom</a>':'');
     }else if(M.paso==="creando"){
       h=lista()+'<p class="resumen">Creando en Classroom…</p>';
@@ -229,20 +241,37 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
     }else{
       var l=utsDe(M.c);
       h='<label class="cr-lab" for="crClase">Clase de Classroom</label><select id="crClase">'+M.clases.map(function(k){return '<option value="'+esc(k.id)+'"'+(k.id===M.curso?' selected':'')+'>'+esc(nomClase(k))+'</option>'}).join("")+'</select>'+
-        '<p class="cr-lab">Unidades</p><div class="cr-uts">'+l.map(function(t){return '<label class="chk"><input type="checkbox" data-ut="'+t.id+'"'+(M.uts[t.id]?' checked':'')+'> <span>'+esc(t.nombre)+' <small>('+t.bloques.length+' bloques)</small></span></label>'}).join("")+'</div>'+
-        '<p class="resumen">Se crea el tema <b>«'+esc(M.c+" "+m.nombre)+'»</b> (o se usa si ya existe) con un material por unidad, <b>en borrador</b>. Lo que ya esté en ese tema no se repite.</p>'+
+        '<label class="cr-lab" for="crTema">Tema</label><input id="crTema" class="cr-txt" list="crTemas" value="'+esc(M.tema)+'" autocomplete="off">'+
+        '<datalist id="crTemas">'+(M.temas||[]).map(function(t){return '<option value="'+esc(t.name)+'">'}).join("")+'</datalist>'+
+        '<p class="cr-ayuda">'+(M.temas===null?'Mirando los temas de esa clase…':M.temas.some(function(t){return t.name===M.tema})?'Ya existe en esa clase: se añadirá ahí.':'Se creará un tema nuevo con este nombre.'+(M.temas.length?' Toca la caja para elegir uno que ya tengas.':''))+'</p>'+
+        '<p class="cr-lab">Unidades</p><div class="cr-uts">'+l.map(function(t){var u=M.uts[t.id];
+          return '<div class="cr-ut"><label class="chk"><input type="checkbox" data-ut="'+t.id+'"'+(u.on?' checked':'')+'> <span>'+esc(t.nombre)+' <small>('+t.bloques.length+' bloques)</small></span></label>'+
+            '<details><summary>Título y descripción</summary>'+
+            '<label class="cr-mini" for="tit-'+t.id+'">Título</label><input id="tit-'+t.id+'" class="cr-txt" data-tit="'+t.id+'" value="'+esc(u.tit)+'">'+
+            '<label class="cr-mini" for="des-'+t.id+'">Descripción</label><textarea id="des-'+t.id+'" class="cr-txt" rows="5" data-des="'+t.id+'">'+esc(u.desc)+'</textarea>'+
+            '</details></div>'}).join("")+'</div>'+
+        '<p class="cr-lab">Cómo se publica</p><div class="cr-estado">'+
+          [["DRAFT","Borrador","lo revisas y publicas tú en Classroom"],["PUBLISHED","Publicar ya","el alumnado lo ve al momento"],["PROG","Programar","se publica solo el día y la hora que elijas"]].map(function(o){
+            return '<label class="chk"><input type="radio" name="crEstado" value="'+o[0]+'"'+(M.estado===o[0]?' checked':'')+'> <span><b>'+o[1]+'</b> <small>· '+o[2]+'</small></span></label>'}).join("")+
+          (M.estado==="PROG"?'<div class="cr-prog"><input type="date" id="crFecha" class="cr-txt" value="'+esc(M.fecha)+'"><input type="time" id="crHora" class="cr-txt" value="'+esc(M.hora)+'"></div>':'')+
+        '</div>'+
         (/^(localhost|127\.)/.test(location.hostname)?'<p class="cr-aviso">Estás en tu ordenador: los enlaces apuntarán a <code>'+esc(location.host)+'</code> y el alumnado no podrá abrirlos. Para la clase de verdad, hazlo desde la web de GitHub.</p>':'')+
         '<button type="button" class="btn cr lleno" data-m="crear">Crear en Classroom</button>';
     }
     cuerpo.innerHTML=h;
   }
+  function fechaProg(){if(!M.fecha)return null;var d=new Date(M.fecha+"T"+(M.hora||"08:00"));return isNaN(d)?null:d}
+  function fechaBonita(){var d=fechaProg();return d?d.toLocaleString("es-ES",{weekday:"long",day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}):""}
   function crear(){
-    var curso=M.curso,m=MOD[M.c],nombre=M.c+" "+m.nombre;
-    var elegidas=utsDe(M.c).filter(function(t){return M.uts[t.id]});
+    var curso=M.curso,nombre=(M.tema||"").trim();
+    var elegidas=utsDe(M.c).filter(function(t){return M.uts[t.id].on});
+    if(!nombre){M.error="Escribe el nombre del tema.";pintaM();return}
     if(!elegidas.length){M.error="Marca al menos una unidad.";pintaM();return}
+    var como={estado:M.estado==="PUBLISHED"?"PUBLISHED":"DRAFT"};
+    if(M.estado==="PROG"){var d=fechaProg();if(!d||d<new Date(Date.now()+5*60000)){M.error="Elige una fecha y hora de publicación que sea más adelante.";pintaM();return}como.programado=d.toISOString()}
     try{localStorage.setItem("cr_clase_"+M.id,curso)}catch(e){}
     M.paso="creando";M.log=[];pintaM();
-    var temaId,ya={};
+    var temaId,ya={},marca=M.estado==="PUBLISHED"?"publicado":M.estado==="PROG"?"programado":"borrador";
     function apunta(x){M.log.push(x);pintaM()}
     CR.temas(curso).then(function(ts){
       var t=ts.filter(function(x){return x.name===nombre})[0];
@@ -252,12 +281,10 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
       ms.forEach(function(x){if(x.topicId===temaId)ya[x.title]=1});
       return elegidas.slice().reverse().reduce(function(pr,t){
         return pr.then(function(){
-          var tit="UT · "+t.nombre;
-          if(ya[tit]){apunta("· "+esc(t.nombre)+": ya estaba, no se repite");return}
-          var desc="Apuntes de la unidad de trabajo «"+t.nombre+"», con dibujos y un test al final de cada bloque.\n\nBloques:\n"+
-            t.bloques.map(function(b){return b.n+". "+b.nombre}).join("\n");
+          var u=M.uts[t.id],tit=(u.tit||"").trim()||("UT · "+t.nombre);
+          if(ya[tit]){apunta("· "+esc(tit)+": ya estaba en el tema, no se repite");return}
           var enl=[abs(t.web)].concat(t.bloques.map(function(b){return abs(t.web+"#"+b.pag)}));
-          return CR.crearMaterial(curso,temaId,tit,desc,enl).then(function(){apunta("✓ "+esc(t.nombre)+" (borrador)")});
+          return CR.crearMaterial(curso,temaId,tit,u.desc,enl,como).then(function(){apunta("✓ "+esc(tit)+" ("+marca+")")});
         });
       },Promise.resolve());
     }).then(function(){M.hecho=true;M.paso="";pintaM()},function(e){M.paso="";M.error=e.message;pintaM()});
@@ -269,9 +296,20 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
     else if(a==="reintentar"){M.error="";M.log=[];if(!CR.conectado())M.clases=null;pintaM()}
     else if(a==="crear")crear();
   });
+  // Lo que se escribe se guarda sin repintar (para no perder el cursor)
+  cuerpo.addEventListener("input",function(e){
+    var t=e.target;
+    if(t.id==="crTema"){M.tema=t.value;var p=t.parentNode.querySelector(".cr-ayuda");if(p&&M.temas)p.textContent=M.temas.some(function(x){return x.name===M.tema})?"Ya existe en esa clase: se añadirá ahí.":"Se creará un tema nuevo con este nombre."}
+    if(t.getAttribute("data-tit"))M.uts[t.getAttribute("data-tit")].tit=t.value;
+    if(t.getAttribute("data-des"))M.uts[t.getAttribute("data-des")].desc=t.value;
+    if(t.id==="crFecha")M.fecha=t.value;
+    if(t.id==="crHora")M.hora=t.value;
+  });
   cuerpo.addEventListener("change",function(e){
-    if(e.target.id==="crClase")M.curso=e.target.value;
-    var u=e.target.getAttribute("data-ut");if(u)M.uts[u]=e.target.checked;
+    var t=e.target;
+    if(t.id==="crClase"){M.curso=t.value;cargaTemas();pintaM()}
+    var u=t.getAttribute("data-ut");if(u)M.uts[u].on=t.checked;
+    if(t.name==="crEstado"){M.estado=t.value;pintaM()}
   });
   $("#crCerrar").addEventListener("click",function(){dlg.close()});
   $("#vista").addEventListener("click",function(e){if(e.target.closest("#montar")){var p=params();abreMontar(p.c,p.m)}});
