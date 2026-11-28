@@ -157,3 +157,23 @@ a.fila-ciclo i{color:var(--k)}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
   header.top .volver-top{display:none}
 }
+
+/* ---------- Ventana «Montar en Classroom» ---------- */
+dialog#crDlg{border:0;border-radius:16px;padding:0;width:min(560px,94vw);max-height:88vh;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog#crDlg::backdrop{background:rgba(10,20,30,.55)}
+.cr-in{padding:16px 18px 20px;overflow:auto;max-height:88vh}
+.cr-cab{display:flex;align-items:center;gap:10px;border-bottom:3px solid var(--cr);padding-bottom:8px;margin-bottom:12px}
+.cr-cab h2{margin:0;flex:1;color:var(--cr)}
+.cr-x{background:none;border:0;font-size:1.3rem;color:var(--ink2);min-width:2.6rem;min-height:2.6rem;border-radius:8px}
+#crCuerpo p{margin:8px 0}
+#crCuerpo select{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:.5rem .6rem;width:100%;min-height:2.8rem}
+.cr-lab{display:block;font-weight:700;margin:12px 0 4px}
+.cr-uts{display:grid;gap:2px}
+.cr-uts .chk{display:flex;gap:8px;align-items:center;min-height:2.4rem}
+.cr-uts input{width:1.2rem;height:1.2rem;accent-color:var(--cr)}
+.cr-uts small{color:var(--ink2)}
+.cr-log{list-style:none;padding:0;margin:4px 0;display:grid;gap:4px;font-size:.95rem}
+.cr-error{background:#FDECEC;color:#8A1C1C;border-left:4px solid #C62828;border-radius:8px;padding:8px 12px}
+.cr-aviso{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:8px;padding:8px 12px;font-size:.9rem}
+@media (prefers-color-scheme:dark){.cr-error{background:#3A1515;color:#FFB4B4}}
+@media (max-width:560px){dialog#crDlg{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0}}

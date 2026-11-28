@@ -43,6 +43,8 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
 </style>
 <script src="banco.js"></script>
 <script src="aula-datos.js"></script>
+<script src="classroom-config.js"></script>
+<script src="classroom.js"></script>
 </head>
 <body>
 <header class="top"><div class="in">
@@ -53,6 +55,7 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
 
 <main id="vista"></main>
 
+<dialog id="crDlg" aria-labelledby="crTit"><div class="cr-in"><div class="cr-cab"><h2 id="crTit">Montar en Classroom</h2><button type="button" class="cr-x" id="crCerrar" aria-label="Cerrar">✕</button></div><div id="crCuerpo"></div></div></dialog>
 <nav class="barra" aria-label="Navegación">
   <a class="atras" id="bAtras" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Atrás</a>
   <a id="bInicio" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Inicio</a>
@@ -151,8 +154,8 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
     var cu=CLASE[id],m=MOD[c],l=utsDe(c);titulo(m.nombre);curso(cu.n);
     var h=migas([["Inicio","#"],migaCiclo(cu.ci),[cu.nombre,"#c="+id],[m.nombre]]);
     etq('<span class="codm" style="--mc:'+m.color+'">'+c+'</span>'+esc(cu.nombre+" · "+cu.ciclo));
-    h+='<div class="consejo"><p><b>En Classroom</b>, crea un tema «'+esc(c+" "+m.nombre)+'» y comparte en él las unidades en el orden que quieras. Allí decides qué se publica y cuándo.</p>'+
-      btnCR("clase.html?c="+id+"#m="+c,c+" "+m.nombre+" · Unidades","Compartir el módulo entero")+'</div>';
+    h+='<div class="consejo"><p><b>Montar en Classroom</b> crea en tu clase el tema «'+esc(c+" "+m.nombre)+'» con todas sus unidades, en borrador. Después publicas allí lo que toque.</p>'+
+      '<button type="button" class="btn cr lleno" id="montar">Montar en Classroom</button></div>';
     h+=l.length?'<div class="lista" style="margin-top:14px">'+l.map(tarjetaUT).join("")+'</div>':'<p class="vacio">Este módulo todavía no tiene unidades.</p>';
     var otras=B.temas.filter(function(t){return t.modulos.indexOf(c)<0});
     if(otras.length)h+='<details class="otras"><summary>Unidades de otros módulos ('+otras.length+')</summary><p class="resumen">Por si una unidad te sirve también aquí (por ejemplo, seguridad).</p><div class="lista" style="margin-top:8px">'+otras.map(tarjetaUT).join("")+'</div></details>';
@@ -184,6 +187,88 @@ details.otras>summary{cursor:pointer;font-weight:700;color:var(--violet);min-hei
     document.title=$("header h1").textContent+" · Aula-taller";
     window.scrollTo(0,0);
   }
+  // ---------- Montar un módulo en Classroom (API) ----------
+  // Crea (o reutiliza) el tema del módulo y un material en borrador por unidad, con el enlace de la unidad
+  // y de cada bloque. Se crean del último al primero para que en Classroom salgan en orden (lo nuevo va arriba).
+  var M=null;
+  var dlg=$("#crDlg"),cuerpo=$("#crCuerpo");
+  function abreMontar(id,c){M={id:id,c:c,clases:null,curso:null,uts:{},paso:"",log:[],error:"",hecho:false};utsDe(c).forEach(function(t){M.uts[t.id]=true});dlg.showModal();pintaM()}
+  function nomClase(k){return k.name+(k.section?" · "+k.section:"")}
+  function lista(){return '<ul class="cr-log">'+M.log.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul>'}
+  function pintaM(){
+    var m=MOD[M.c],h="";
+    if(!CR.configurado()){
+      h='<p>Para crear temas y materiales en tu Classroom desde aquí, hay que conectar la web con Google <b>una sola vez</b>: crear un proyecto gratuito en Google Cloud y pegar su «ID de cliente» en <code>classroom-config.js</code>.</p>'+
+        '<p class="resumen">Los pasos están en la guía <b>GUIA_API_CLASSROOM.md</b>. Mientras tanto, usa «Compartir en Classroom» en cada unidad.</p>';
+    }else if(M.error){
+      h=(M.log.length?lista():'')+'<p class="cr-error">'+esc(M.error)+'</p><button type="button" class="btn cr lleno" data-m="reintentar">Volver a probar</button>';
+    }else if(!CR.conectado()){
+      h='<p>Entra con la cuenta de Google de tu Classroom. Google te preguntará si dejas a esta web <b>ver tus clases y crear temas y materiales</b>.</p>'+
+        '<button type="button" class="btn cr lleno" data-m="entrar">Entrar con Google</button>';
+    }else if(!M.clases){
+      h='<p class="resumen">Buscando tus clases de Classroom…</p>';
+      CR.clases().then(function(l){
+        M.clases=l;var g=null;try{g=localStorage.getItem("cr_clase_"+M.id)}catch(e){}
+        M.curso=(l.filter(function(k){return k.id===g})[0]||l[0]||{}).id||null;pintaM();
+      },function(e){M.error=e.message;pintaM()});
+    }else if(M.hecho){
+      var k=M.clases.filter(function(x){return x.id===M.curso})[0];
+      h=lista()+'<p><b>Listo.</b> Todo queda en <b>borrador</b>: entra en Classroom, revisa el tema y publica lo que toque.</p>'+
+        (k&&k.alternateLink?'<a class="btn cr lleno" href="'+esc(k.alternateLink)+'" target="_blank" rel="noopener">Abrir la clase en Classroom</a>':'');
+    }else if(M.paso==="creando"){
+      h=lista()+'<p class="resumen">Creando en Classroom…</p>';
+    }else if(!M.clases.length){
+      h='<p>No tienes clases activas en Classroom con esta cuenta. Crea la clase en Classroom y vuelve a probar.</p>';
+    }else{
+      var l=utsDe(M.c);
+      h='<label class="cr-lab" for="crClase">Clase de Classroom</label><select id="crClase">'+M.clases.map(function(k){return '<option value="'+esc(k.id)+'"'+(k.id===M.curso?' selected':'')+'>'+esc(nomClase(k))+'</option>'}).join("")+'</select>'+
+        '<p class="cr-lab">Unidades</p><div class="cr-uts">'+l.map(function(t){return '<label class="chk"><input type="checkbox" data-ut="'+t.id+'"'+(M.uts[t.id]?' checked':'')+'> <span>'+esc(t.nombre)+' <small>('+t.bloques.length+' bloques)</small></span></label>'}).join("")+'</div>'+
+        '<p class="resumen">Se crea el tema <b>«'+esc(M.c+" "+m.nombre)+'»</b> (o se usa si ya existe) con un material por unidad, <b>en borrador</b>. Lo que ya esté en ese tema no se repite.</p>'+
+        (/^(localhost|127\.)/.test(location.hostname)?'<p class="cr-aviso">Estás en tu ordenador: los enlaces apuntarán a <code>'+esc(location.host)+'</code> y el alumnado no podrá abrirlos. Para la clase de verdad, hazlo desde la web de GitHub.</p>':'')+
+        '<button type="button" class="btn cr lleno" data-m="crear">Crear en Classroom</button>';
+    }
+    cuerpo.innerHTML=h;
+  }
+  function crear(){
+    var curso=M.curso,m=MOD[M.c],nombre=M.c+" "+m.nombre;
+    var elegidas=utsDe(M.c).filter(function(t){return M.uts[t.id]});
+    if(!elegidas.length){M.error="Marca al menos una unidad.";pintaM();return}
+    try{localStorage.setItem("cr_clase_"+M.id,curso)}catch(e){}
+    M.paso="creando";M.log=[];pintaM();
+    var temaId,ya={};
+    function apunta(x){M.log.push(x);pintaM()}
+    CR.temas(curso).then(function(ts){
+      var t=ts.filter(function(x){return x.name===nombre})[0];
+      if(t){temaId=t.topicId;apunta("✓ Tema «"+esc(nombre)+"» (ya existía)");return}
+      return CR.crearTema(curso,nombre).then(function(n){temaId=n.topicId;apunta("✓ Tema «"+esc(nombre)+"» creado")});
+    }).then(function(){return CR.materiales(curso)}).then(function(ms){
+      ms.forEach(function(x){if(x.topicId===temaId)ya[x.title]=1});
+      return elegidas.slice().reverse().reduce(function(pr,t){
+        return pr.then(function(){
+          var tit="UT · "+t.nombre;
+          if(ya[tit]){apunta("· "+esc(t.nombre)+": ya estaba, no se repite");return}
+          var desc="Apuntes de la unidad de trabajo «"+t.nombre+"», con dibujos y un test al final de cada bloque.\n\nBloques:\n"+
+            t.bloques.map(function(b){return b.n+". "+b.nombre}).join("\n");
+          var enl=[abs(t.web)].concat(t.bloques.map(function(b){return abs(t.web+"#"+b.pag)}));
+          return CR.crearMaterial(curso,temaId,tit,desc,enl).then(function(){apunta("✓ "+esc(t.nombre)+" (borrador)")});
+        });
+      },Promise.resolve());
+    }).then(function(){M.hecho=true;M.paso="";pintaM()},function(e){M.paso="";M.error=e.message;pintaM()});
+  }
+  cuerpo.addEventListener("click",function(e){
+    var b=e.target.closest("[data-m]");if(!b)return;
+    var a=b.getAttribute("data-m");
+    if(a==="entrar"){b.disabled=true;b.textContent="Abriendo Google…";CR.conectar().then(pintaM,function(err){M.error=err.message;pintaM()})}
+    else if(a==="reintentar"){M.error="";M.log=[];if(!CR.conectado())M.clases=null;pintaM()}
+    else if(a==="crear")crear();
+  });
+  cuerpo.addEventListener("change",function(e){
+    if(e.target.id==="crClase")M.curso=e.target.value;
+    var u=e.target.getAttribute("data-ut");if(u)M.uts[u]=e.target.checked;
+  });
+  $("#crCerrar").addEventListener("click",function(){dlg.close()});
+  $("#vista").addEventListener("click",function(e){if(e.target.closest("#montar")){var p=params();abreMontar(p.c,p.m)}});
+
   window.addEventListener("hashchange",pinta);
   $("#vista").addEventListener("click",function(e){
     var b=e.target.closest("#copiar");if(!b)return;

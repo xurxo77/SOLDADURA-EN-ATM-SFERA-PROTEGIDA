@@ -9,10 +9,11 @@ Apuntes visuales y pruebas escritas para el CFGM de Soldadura y Calderería y la
 | `index.html` | Entrada: modo estudiante o modo profesor |
 | `estudiar.html` | Modo estudiante: ciclo → módulo → temas y bloques, con los RA que trabaja cada bloque |
 | `preparar.html` | Modo profesor: pruebas de respuesta múltiple y/o desarrollo, por dificultad, vinculadas a RA y CE |
-| `profesor.html` | Espacio docente: mis clases (1.º y 2.º), catálogo de unidades, planificación por clase y módulo (ordenar, publicar, ocultar) |
-| `clase.html` | Alumnado: `clase.html?c=1SC` o `?c=2SC`; solo ve las unidades publicadas, en el orden del profesor |
+| `profesor.html` | Espacio docente: ciclo → curso → módulo → unidades, cada una con «Compartir en Classroom» (la planificación se hace en Classroom); catálogo de unidades |
+| `clase.html` | Estudiante: ciclo → curso → módulo → unidades → bloques. Enlace directo a una clase: `clase.html?c=1SC` o `?c=2SC` |
 | `aula-datos.js` | Ciclo, cursos y módulos de cada curso (se edita a mano) |
-| `planificacion.js` | Qué UT tiene cada clase y módulo y si están publicadas (se descarga desde `profesor.html` y se sube) |
+| `classroom.js` | Conexión con la API de Google Classroom («Montar en Classroom»: crea el tema del módulo y un material por unidad, en borrador) |
+| `classroom-config.js` | ID de cliente de Google (se rellena una vez; guía en `GUIA_API_CLASSROOM.md` del proyecto) |
 | `aula.css` | Estilo común de `profesor.html` y `clase.html` |
 | `banco.js` | Banco de preguntas y vínculos con módulos, RA y CE (lo genera `tools/banco.js`, no se edita a mano) |
 | `electrodo.html` | Soldadura con electrodo revestido (4 bloques) |
