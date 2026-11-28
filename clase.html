@@ -13,7 +13,6 @@
 .ut-cab{background:var(--card);border:1px solid var(--line);border-top:8px solid var(--c);border-radius:14px;overflow:hidden;margin-top:12px}
 .ut-cab img{display:block;width:100%;height:140px;object-fit:cover;background:var(--line)}
 .ut-cab .tx{padding:12px 16px 16px}
-.ut-cab .cod{font-weight:700;color:var(--c);font-size:.9rem}
 .ut-cab h2{margin:2px 0 4px;color:var(--c)}
 .bloques{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
 .bloques a{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit;border:1.5px solid var(--line);border-radius:10px;padding:.7rem .8rem;min-height:3.2rem;background:var(--card)}
@@ -23,101 +22,100 @@
 .completa{display:inline-block;margin-top:14px;font-weight:700;color:var(--c)}
 a.ut{text-decoration:none;color:inherit}
 a.ut:hover{border-color:var(--c)}
-.previa{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:.92rem}
 a.ut .ir{color:var(--c);font-weight:700;font-size:1.4rem}
+.ciclos{display:grid;gap:10px;margin-top:18px}
+.arriba{margin-top:14px}
 </style>
 <script src="banco.js"></script>
 <script src="aula-datos.js"></script>
-<script>document.write('<script src="planificacion.js?v='+Date.now()+'"><\/script>')</script>
 </head>
 <body>
 <header class="top"><div class="in">
-  <a href="index.html">← Volver a la entrada</a>
-  <div class="etq" id="etq">Modo estudiante</div>
+  <a class="volver-top" href="index.html">← Volver a la entrada</a>
+  <div class="etq">Estudiante</div>
   <h1 id="tit">Mi clase</h1>
 </div></header>
 
 <main id="vista"></main>
+<nav class="barra" aria-label="Navegación">
+  <a class="atras" id="bAtras" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Atrás</a>
+  <a id="bInicio" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Inicio</a>
+  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg>Salir</a>
+</nav>
 <footer>Material elaborado por <b>Xurxo</b></footer>
 
 <script>
 (function(){
-  var B=window.BANCO,A=window.AULA,P=(window.PLAN||{}).clases||{},ORD=(window.PLAN||{}).orden||{};
-  // Vista previa del profesor: usa sus cambios sin subir de este navegador
-  var PREVIA=new URLSearchParams(location.search).get("previa")==="1";
-  if(PREVIA){try{var bo=JSON.parse(localStorage.getItem("aula_plan_borrador"));if(bo){P=bo.clases||bo;ORD=bo.orden||ORD}}catch(e){}}
+  // Apuntes del alumnado: ciclo → curso → módulo → unidades → bloques.
+  // Lo que se trabaja en cada momento lo publica el profesor en Google Classroom; aquí está todo.
+  var B=window.BANCO,A=window.AULA;
   var $=function(s){return document.querySelector(s)};
+  // Barra de abajo (móvil): Atrás sube un nivel; Inicio va al principio de este espacio
+  function barra(atras,inicio){var a=document.getElementById("bAtras"),i=document.getElementById("bInicio");a.href=atras||"#";a.classList.toggle("off",!atras);i.href=inicio||"#";i.classList.toggle("off",!inicio)}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   var POS={migmag:"50% 40%",corte:"30% 50%",trazado:"50% 20%"};
-  var UT={};B.temas.forEach(function(t){UT[t.id]=t});
-  var CLASE={},CICLO={};A.ciclos.forEach(function(ci){CICLO[ci.id]=ci;ci.cursos.forEach(function(cu){cu.ciclo=ci.corto+" "+ci.nombre;cu.ci=ci;CLASE[cu.id]=cu})});
-  // Módulos en el orden que eligió el profesor (los que falten, al final)
-  function modsDe(cu){var o=(ORD[cu.id]||[]).slice();return cu.modulos.slice().sort(function(a,b){var i=o.indexOf(a[0]),j=o.indexOf(b[0]);return (i<0?99:i)-(j<0?99:j)})}
-  function franja(cu,extra){return '<div class="franja curso-'+cu.n+'"><span class="sello">'+cu.n+'.º</span><div><b>'+esc(cu.nombre)+'</b><span>'+esc(cu.ciclo)+'</span></div>'+(extra||'')+'</div>'}
-
-  // Solo lo publicado
-  function publicadas(id,m){return ((P[id]||{})[m]||[]).filter(function(x){return x.pub&&UT[x.ut]}).map(function(x){return UT[x.ut]})}
+  var CLASE={};A.ciclos.forEach(function(ci){ci.cursos.forEach(function(cu){cu.ciclo=ci.corto+" "+ci.nombre;cu.ci=ci;CLASE[cu.id]=cu})});
+  var CICLO={};A.ciclos.forEach(function(ci){CICLO[ci.id]=ci});
+  function utsDe(m){return B.temas.filter(function(t){return t.modulos.indexOf(m)>=0})}
+  function etq(html){$("header .etq").innerHTML=html||"Estudiante"}
+  function franja(cu){return '<div class="franja curso-'+cu.n+'"><span class="sello">'+cu.n+'.º</span><div><b>'+esc(cu.nombre)+'</b><span>'+esc(cu.ciclo)+'</span></div></div>'}
+  function etqMod(cu,mod){etq('<span class="codm" style="--mc:'+mod[2]+'">'+mod[0]+'</span>'+esc(cu.nombre+" · "+cu.ciclo))}
+  function franjaMod(mod){return '<div class="franja-mod" style="--mc:'+mod[2]+'"><span class="codm">'+mod[0]+'</span><b>'+esc(mod[1])+'</b></div>'}
   function img(t){return '<img src="img/'+t.id+'.jpg" alt="" loading="lazy"'+(POS[t.id]?' style="object-position:'+POS[t.id]+'"':'')+'>'}
   function migas(arr){return '<nav class="migas" aria-label="Dónde estás">'+arr.map(function(x,i){return i<arr.length-1?'<a href="'+x[1]+'">'+esc(x[0])+'</a><span class="sep">›</span>':'<span>'+esc(x[0])+'</span>'}).join("")+'</nav>'}
 
   var q=new URLSearchParams(location.search),id=q.get("c");
-  if(!CLASE[id]){try{var g=localStorage.getItem("aula_clase");if(CLASE[g])id=g}catch(e){}}
-  if(CLASE[id]&&!PREVIA){try{localStorage.setItem("aula_clase",id)}catch(e){}}
+  // ?c= vacío: el alumno quiere elegir otra clase (no se usa la guardada)
+  if(!CLASE[id]&&!q.has("c")){try{var g=localStorage.getItem("aula_clase");if(CLASE[g])id=g}catch(e){}}
+  var mia=null;try{mia=localStorage.getItem("aula_clase")}catch(e){}
+  if(CLASE[id]){try{localStorage.setItem("aula_clase",id)}catch(e){}}
 
-  // Sin clase: primero el ciclo, después el curso
+  // Sin clase: primero el ciclo (la sigla CFGM, CFGS, FPB ya dice el grado), después el curso
   function elegirCiclo(){
-    $("#tit").textContent="Mis clases";
-    var h='<h2>¿Qué estudias?</h2>',grados=[];
-    A.ciclos.forEach(function(ci){if(grados.indexOf(ci.grado)<0)grados.push(ci.grado)});
-    grados.forEach(function(g){
-      h+='<section class="grado"><h3 class="grado-tit">'+esc(g)+'</h3>';
-      A.ciclos.filter(function(ci){return ci.grado===g}).forEach(function(ci){
-        if(!ci.cursos.length){h+='<div class="fila-ciclo prox" style="--k:'+ci.color+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>Próximamente</small></span></div>';return}
-        h+='<a class="fila-ciclo" style="--k:'+ci.color+'" href="#ci='+ci.id+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>'+ci.cursos.length+' cursos</small></span><i aria-hidden="true">›</i></a>';
-      });
-      h+='</section>';
+    $("#tit").textContent="¿Qué estudias?";
+    var h='<div class="ciclos">';
+    A.ciclos.filter(function(ci){return ci.cursos.length}).forEach(function(ci){
+      h+='<a class="fila-ciclo" style="--k:'+ci.color+'" href="clase.html?c=#ci='+ci.id+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>'+ci.cursos.length+' cursos</small></span><i aria-hidden="true">›</i></a>';
     });
-    return h+'<p class="nota">Si tu profesor o profesora te pasó un enlace, entra por él: te lleva directo a tu clase.</p>';
+    A.ciclos.filter(function(ci){return !ci.cursos.length}).forEach(function(ci){
+      h+='<div class="fila-ciclo prox" style="--k:'+ci.color+'"><span class="sigla">'+esc(ci.corto)+'</span><span class="tx"><b>'+esc(ci.nombre)+'</b><small>Próximamente</small></span></div>';
+    });
+    return h+'</div><p class="nota">Si tu profesor o profesora te pasó un enlace, entra por él: te lleva directo a tu clase.</p>';
   }
   function elegirCurso(ci){
     $("#tit").textContent=ci.corto+" "+ci.nombre;
-    var h='<nav class="migas"><a href="#">Ciclos</a><span class="sep">›</span><span>'+esc(ci.corto+" "+ci.nombre)+'</span></nav><h2>¿En qué curso estás?</h2><div class="lista">';
+    var h=migas([["Ciclos","#"],[ci.corto+" "+ci.nombre]])+'<div class="lista arriba">';
     ci.cursos.forEach(function(cu){
       h+='<a class="tarj curso curso-'+cu.n+'" href="clase.html?c='+cu.id+'"><span class="sello">'+cu.n+'.º</span><div><h3>'+esc(cu.nombre)+'</h3><p>'+esc(cu.grupo)+'</p></div></a>';
     });
     return h+'</div><p class="nota">¿Quieres verlo todo, sin separar por clase? <a href="estudiar.html">Todos los temas por módulo</a>.</p>';
   }
   function modulos(){
-    var cu=CLASE[id];$("#tit").textContent="Mis módulos";
-    var con=modsDe(cu).filter(function(m){return publicadas(id,m[0]).length});
-    var h=franja(cu)+'<h2>Tus módulos<small>Toca un módulo para ver sus unidades de trabajo.</small></h2>';
-    if(!con.length)return h+'<p class="vacio">Tu profesor o profesora todavía no ha publicado unidades. Vuelve más adelante.</p>'+otraClase();
-    h+='<div class="rejilla">';
-    con.forEach(function(m){var l=publicadas(id,m[0]);
-      h+='<a class="tarj modulo" style="--mc:'+m[2]+'" href="#m='+m[0]+'"><span class="codm">'+m[0]+'</span><h3>'+esc(m[1])+'</h3><p>'+l.length+(l.length===1?' unidad':' unidades')+': '+esc(l.map(function(t){return t.nombre}).join(" · "))+'</p></a>'});
-    return h+'</div>'+otraClase();
-  }
-  function otraClase(){return '<p class="nota">¿No es tu clase? <a href="clase.html?c=" id="cambiar">Cambiar de clase</a>.</p>'}
-  function unidades(m){
-    var cu=CLASE[id],mod=cu.modulos.filter(function(x){return x[0]===m})[0];
-    if(!mod)return modulos();
-    $("#tit").textContent=mod[1];
-    var l=publicadas(id,m);
-    var h=migas([[cu.nombre,"#"],[mod[1]]])+franja(cu)+'<div class="franja-mod" style="--mc:'+mod[2]+'"><span class="codm">'+m+'</span><b>'+esc(mod[1])+'</b></div>'+'<h2>Unidades de trabajo</h2>';
-    if(!l.length)return h+'<p class="vacio">Este módulo no tiene unidades publicadas ahora mismo.</p>';
-    h+='<div class="lista">';
-    l.forEach(function(t,i){
-      h+='<a class="ut c-'+t.id+'" href="#m='+m+'&ut='+t.id+'">'+img(t)+'<div class="tx"><h3>'+esc(t.nombre)+'</h3><p>'+t.bloques.length+' bloques</p></div><span class="ir" aria-hidden="true">›</span></a>';
+    var cu=CLASE[id];$("#tit").textContent=cu.nombre;etq(esc(cu.ciclo));
+    var h='<div class="rejilla arriba">';
+    cu.modulos.forEach(function(m){
+      var l=utsDe(m[0]);
+      if(!l.length){h+='<a class="tarj modulo vacia" style="--mc:'+m[2]+'" href="#m='+m[0]+'"><span class="codm">'+m[0]+'</span><h3>'+esc(m[1])+'</h3><p>Todavía sin apuntes</p></a>';return}
+      h+='<a class="tarj modulo" style="--mc:'+m[2]+'" href="#m='+m[0]+'"><span class="codm">'+m[0]+'</span><h3>'+esc(m[1])+'</h3><p>'+l.length+(l.length===1?' unidad: ':' unidades: ')+esc(l.map(function(t){return t.nombre}).join(" · "))+'</p></a>';
     });
-    return h+'</div>';
+    return h+'</div><p class="nota">¿No es tu clase? <a href="clase.html?c=" id="cambiar">Cambiar de clase</a>.</p>';
+  }
+  function modDe(m){return CLASE[id].modulos.filter(function(x){return x[0]===m})[0]}
+  function unidades(m){
+    var cu=CLASE[id],mod=modDe(m);if(!mod)return modulos();
+    $("#tit").textContent=mod[1];etqMod(cu,mod);
+    var l=utsDe(m),h=migas([[cu.nombre,"#"],[mod[1]]]);
+    if(!l.length)return h+'<p class="vacio arriba">Este módulo todavía no tiene apuntes.</p>';
+    return h+'<div class="lista arriba">'+l.map(function(t){
+      return '<a class="ut c-'+t.id+'" href="#m='+m+'&ut='+t.id+'">'+img(t)+'<div class="tx"><h3>'+esc(t.nombre)+'</h3><p>'+t.bloques.length+' bloques</p></div><span class="ir" aria-hidden="true">›</span></a>';
+    }).join("")+'</div>';
   }
   function unidad(m,u){
-    var cu=CLASE[id],mod=cu.modulos.filter(function(x){return x[0]===m})[0],l=publicadas(id,m),i=l.map(function(t){return t.id}).indexOf(u);
-    if(!mod)return modulos();
-    if(i<0){$("#tit").textContent=mod[1];return migas([[cu.nombre,"#"],[mod[1],"#m="+m]])+'<p class="vacio" style="margin-top:14px">Esta unidad no está disponible ahora. <a href="#m='+m+'">Ver las unidades del módulo</a>.</p>'}
-    var t=l[i];$("#tit").textContent=mod[1];
+    var cu=CLASE[id],mod=modDe(m),t=B.temas.filter(function(x){return x.id===u})[0];
+    if(!mod)return modulos();if(!t)return unidades(m);
+    $("#tit").textContent=mod[1];etqMod(cu,mod);
     return migas([[cu.nombre,"#"],[mod[1],"#m="+m],[t.nombre]])+
-      '<div class="ut-cab c-'+t.id+'">'+img(t)+'<div class="tx"><span class="cod">Módulo '+m+'</span><h2>'+esc(t.nombre)+'</h2><p>Elige un bloque. Cada uno trae sus dibujos y un test al final.</p>'+
+      '<div class="ut-cab c-'+t.id+'">'+img(t)+'<div class="tx"><h2>'+esc(t.nombre)+'</h2><p>Elige un bloque. Cada uno trae sus dibujos y un test al final.</p>'+
       '<ol class="bloques">'+t.bloques.map(function(b){return '<li><a href="'+t.web+'#'+b.pag+'"><span class="n">'+b.n+'</span><span>'+esc(b.nombre)+'</span><span class="ir" aria-hidden="true">›</span></a></li>'}).join("")+'</ol>'+
       '<a class="completa" href="'+t.web+'">Abrir la unidad completa →</a></div></div>'+
       '<p class="nota">La unidad se abre en un solo archivo con todas sus imágenes: si lo guardas en el móvil, funciona sin conexión.</p>';
@@ -125,12 +123,18 @@ a.ut .ir{color:var(--c);font-weight:700;font-size:1.4rem}
 
   function ruta(){
     var o={};location.hash.slice(1).split("&").forEach(function(p){var kv=p.split("=");if(kv[0])o[kv[0]]=decodeURIComponent(kv[1]||"")});
+    etq();
     document.body.className=CLASE[id]?"curso-"+CLASE[id].n:"";
-    var h=!CLASE[id]?(o.ci&&CICLO[o.ci]&&CICLO[o.ci].cursos.length?elegirCurso(CICLO[o.ci]):elegirCiclo()):o.ut?unidad(o.m,o.ut):o.m?unidades(o.m):modulos();
-    if(PREVIA)h='<p class="previa">Vista previa del profesor: así lo verá el alumnado cuando subas la planificación.</p>'+h;
+    var h,casa=CLASE[mia]?"clase.html?c="+mia:"clase.html?c=";
+    if(!CLASE[id]){
+      if(o.ci&&CICLO[o.ci]&&CICLO[o.ci].cursos.length){h=elegirCurso(CICLO[o.ci]);barra("clase.html?c=",casa)}
+      else{h=elegirCiclo();barra(null,CLASE[mia]?casa:null)}
+    }
+    else if(o.ut){h=unidad(o.m,o.ut);barra("#m="+o.m,"clase.html?c="+id)}
+    else if(o.m){h=unidades(o.m);barra("clase.html?c="+id,"clase.html?c="+id)}
+    else{h=modulos();barra("clase.html?c=#ci="+CLASE[id].ci.id,null)}
     $("#vista").innerHTML=h;
     document.title=$("#tit").textContent+" · Aula-taller";
-    var c=$("#cambiar");if(c)c.addEventListener("click",function(){try{localStorage.removeItem("aula_clase")}catch(e){}});
     window.scrollTo(0,0);
   }
   window.addEventListener("hashchange",ruta);ruta();
